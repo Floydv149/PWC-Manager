@@ -1,8 +1,5 @@
 <?php
 
-//Include database connection
-include("/home/schelsge/public_html/includes/databaseConnection.php");
-
 $cartID = $_GET["id"];
 
 $cartContent = mysqli_query($con, "SELECT Trolleys_Ontwerpen.Inhoud FROM Trolleys INNER JOIN Trolleys_Ontwerpen ON Trolleys.OntwerpID = Trolleys_Ontwerpen.ID WHERE Trolleys.ID = " . $cartID);
