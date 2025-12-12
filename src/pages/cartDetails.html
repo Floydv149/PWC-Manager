@@ -46,11 +46,6 @@
 
     #cartDetails {}
 
-    #modals {
-        position: relative;
-        z-index: 10;
-    }
-
     .interactionProtection {
         position: fixed;
         top: 0;
@@ -59,29 +54,6 @@
         height: 200vh;
         background: rgba(0, 0, 0, 0);
         transition: background-color .5s;
-    }
-
-    .modal {
-        position: fixed;
-        top: 5vh;
-        width: 90%;
-        max-width: 740px;
-        overflow-y: scroll;
-        max-height: 85vh;
-        background: var(--color-body-background);
-        border: 2.5px solid var(--color-button-background);
-        border-radius: 10px;
-        left: 5%;
-        padding: 10px;
-        transform: scale(0);
-        transition: transform .25s;
-        box-sizing: border-box;
-    }
-
-    .modal textarea {
-        width: 80%;
-        min-height: 100px;
-        resize: vertical;
     }
 
     #designs {
@@ -317,12 +289,6 @@
         padding: 0px 10px;
     }
 
-    @media only screen and (min-width: 830px) {
-        .modal {
-            left: calc((100% - 740px) / 2);
-        }
-    }
-
     .widget .publication h4 {
         /* max-width: 38vw; */
     }
@@ -388,9 +354,8 @@
         <div id="cartContents"></div>
     </div>
     <hr>
-    <a class="normal rounded full medium" data-page="editCart"><img src="/assets/icons/pen.png">Choose design</a>
-    <a class="normal rounded full medium" data-page="editCart"><img src="/assets/icons/pen.png">Edit design</a>
-    <a class="normal rounded full medium" data-page="editCart"><img src="/assets/icons/pen.png">Edit cart</a>
+    <a class="normal rounded full medium"><img src="/assets/icons/pen.png">Choose design</a>
+    <a class="normal rounded full medium"><img src="/assets/icons/pen.png">Edit design</a>
     <a class="normal rounded full medium" onclick="toggleRealisticView()" id='realisticViewToggle'><img
             src="/assets/icons/eye.png">Change view</a>
     <div id="widgets">
@@ -427,7 +392,10 @@
                 supplies</a>
         </div>
     </div>
-    <div id="modals"></div>
+    <br>
+    <a class="normal rounded full medium" data-page="editCart"><img src="/assets/icons/settings.png">Edit cart
+        settings</a>
+    <a class="normal rounded full medium" onclick="deleteCart()"><img src="/assets/icons/trash.png">Delete cart</a>
     </div>
 </body>
 <script>
@@ -473,5 +441,16 @@
             cartContents.classList.remove("realistic");
             realisticViewToggle.innerHTML = "<img src='/assets/icons/eye.png'>Change view";
         }
+    }
+
+    function deleteCart() {
+        openYesNoModal("trash", "DELETE CART", "<p class='center'>Are you sure you want to delete this cart?<br>All it's data will be lost.</p><p class='center'>This action cannot be undone.</p>", "Yes", "No").then((result) => {
+            if (result) {
+                delete data.carts[session.currentCartIndex];
+                openAlertModal("checkBox", "CART DELETED", "<p class='center'>The cart has been deleted successfully.</p>", "Okay").then(() => {
+                    loadPage("home");
+                });
+            }
+        });
     }
 </script>
