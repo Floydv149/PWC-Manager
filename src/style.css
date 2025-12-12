@@ -1137,21 +1137,32 @@ input:checked + .slider:before {
 }
 
 #modals {
-	position: relative;
+	position: fixed;
 	z-index: 10;
+
+	inset: 0;
+
+	display: grid;
+	place-items: center;
+	pointer-events: none;
 }
 
 .modal {
-	position: fixed;
-	top: 5vh;
+	position: relative;
+	pointer-events: auto;
+
+	inset: 0;
+	margin: auto;
+	height: fit-content;
+
 	width: 90%;
 	max-width: 740px;
-	overflow-y: scroll;
+
+	overflow-y: auto;
 	max-height: 85vh;
 	background: var(--color-body-background);
 	border: 2.5px solid var(--color-button-background);
 	border-radius: 10px;
-	left: 5%;
 	padding: 10px;
 	transform: scale(0);
 	transition: transform 0.25s;
@@ -1172,12 +1183,6 @@ input:checked + .slider:before {
 	width: 80%;
 	min-height: 100px;
 	resize: vertical;
-}
-
-@media only screen and (min-width: 830px) {
-	.modal {
-		left: calc((100% - 740px) / 2);
-	}
 }
 
 @keyframes growSizeLeft {
