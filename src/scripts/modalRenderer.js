@@ -28,6 +28,49 @@ export function openModal(htmlContent) {
 	}, 25);
 }
 
+export async function openYesNoModal(
+	questionHeaderIcon,
+	questionHeaderText,
+	questionHTML,
+	yesAnswer,
+	noAnswer
+) {
+	session.currentYesNoModalAnswer = -1;
+
+	return new Promise((resolve) => {
+		const modalHTML =
+			`
+		<h2 class='center'><img src="/assets/icons/` +
+			questionHeaderIcon +
+			`.png">` +
+			questionHeaderText +
+			`</h2>
+		<div class="modalContent">
+			${questionHTML}
+			<div class="modalButtons">
+				<a class="normal rounded full medium" onclick="session.currentYesNoModalAnswer = 1"><img src="/assets/icons/checkBox.png">` +
+			yesAnswer +
+			`</a>
+				<a class="normal rounded full small" onclick="session.currentYesNoModalAnswer = 0"><img src="/assets/icons/close.png">` +
+			noAnswer +
+			`</a>
+			</div>
+		</div>
+		`;
+		openModal(modalHTML);
+
+		const checkAnswerInterval = setInterval(() => {
+			if (session.currentYesNoModalAnswer !== -1) {
+				clearInterval(checkAnswerInterval);
+				const answer = session.currentYesNoModalAnswer;
+				session.currentYesNoModalAnswer = -1;
+				closeLastModal();
+				resolve(answer === 1);
+			}
+		}, 100);
+	});
+}
+
 export function closeLastModal() {
 	const modal = document.querySelector("#modals .modalContainer:last-child");
 	console.log(modal);
