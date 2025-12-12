@@ -1,0 +1,85 @@
+<style>
+    #locationsList {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .locationBox {
+        border: 2.5px solid var(--color-input-border);
+        background: var(--color-input-background);
+        border-radius: 10px;
+        padding: 5px 10px;
+        margin: 5px 5px;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .locationBox .locationName {
+        flex-grow: 2;
+    }
+
+    .locationBox img {
+        width: 30px;
+        height: 30px;
+        justify-self: flex-end;
+    }
+</style>
+
+<body>
+    <h2 class="center" id="header"><img src="/assets/icons/pen.png">EDIT LOCATIONS</h2>
+    <p class="center" id="description">Edit the locations below.</p>
+    <hr>
+    <div id="locationsList">
+
+    </div>
+</body>
+<script>
+    function initLocationsList() {
+        const locationsList = document.getElementById('locationsList');
+
+        for (const locationID in data.locations) {
+            let locationButtonContent = "<div class='locationBox'>";
+
+            const location = data.locations[locationID];
+
+            locationButtonContent += "<div class='locationName'>" + location.name + "</div>";
+            locationButtonContent += "<img src='/assets/icons/pen.png'><img src='/assets/icons/trash.png'></div>";
+
+            locationsList.innerHTML += locationButtonContent;
+        }
+
+        setTimeout(() => {
+            openModal("hi");
+        }, 1000);
+
+    }
+
+    initLocationsList();
+
+    function save() {
+        const form = document.getElementById('editCartForm');
+        const cartIndex = session.currentCartIndex;
+        const cart = data.carts[cartIndex];
+
+        cart.number = parseInt(form.number.value);
+        cart.name = form.name.value;
+        cart.locationID = form.location.value;
+        cart.responsible = form.responsible.value;
+
+        saveData();
+        session.newCart = false;
+    }
+
+    function cancel() {
+        if (session.newCart) {
+            delete data.carts[session.currentCartIndex];
+        }
+
+        session.newCart = false;
+        saveData();
+    }
+</script>

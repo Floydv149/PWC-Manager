@@ -1,0 +1,462 @@
+<style>
+    #cartAppearance {
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        justify-content: center;
+        flex-wrap: wrap;
+        width: 100%;
+        gap: 10px;
+    }
+
+    #cartCover {
+        border-radius: 10px;
+        width: 144px;
+        height: 320px;
+        margin: 0px;
+    }
+
+    #cartContents {
+        border: 2.5px solid #333333;
+        border-radius: 10px;
+        box-sizing: border-box;
+        background: #1a1a1a;
+        transition: margin .5s;
+        width: 144px;
+        height: 320px;
+    }
+
+    #cartContents .cartRow {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        border-bottom: 5px solid #333333;
+    }
+
+    #cartContents .cartRow:last-child {
+        border-bottom: none;
+    }
+
+    #cartContents .cartRow img {
+        width: 46% !important;
+        max-height: 82.84px !important;
+    }
+
+    #cartDetails {}
+
+    #modals {
+        position: relative;
+        z-index: 10;
+    }
+
+    .interactionProtection {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 200vw;
+        height: 200vh;
+        background: rgba(0, 0, 0, 0);
+        transition: background-color .5s;
+    }
+
+    .modal {
+        position: fixed;
+        top: 5vh;
+        width: 90%;
+        max-width: 740px;
+        overflow-y: scroll;
+        max-height: 85vh;
+        background: var(--color-body-background);
+        border: 2.5px solid var(--color-button-background);
+        border-radius: 10px;
+        left: 5%;
+        padding: 10px;
+        transform: scale(0);
+        transition: transform .25s;
+        box-sizing: border-box;
+    }
+
+    .modal textarea {
+        width: 80%;
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    #designs {
+        margin: 10px 0px;
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .design {
+        width: min-content;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        background: var(--color-content-background-primary);
+        border-radius: 10px;
+        border: 2.5px solid var(--color-button-hover-background);
+        transition: border-color .25s, background .25s;
+    }
+
+    .design:hover {
+        background: var(--color-content-background-secondary);
+        border-color: var(--color-button-background);
+    }
+
+    .looks {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .cover {
+        justify-self: left;
+        width: 96px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .cover img {
+        border-radius: 10px;
+        margin: 0px;
+    }
+
+    .cart {
+        border: 2.5px solid #333333;
+        border-radius: 10px;
+        box-sizing: border-box;
+        background: #1a1a1a;
+        width: 96px;
+        height: 213.333px;
+    }
+
+    .cart .cartRow {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        border-bottom: 5px solid #333333;
+    }
+
+    .cart .cartRow:last-child {
+        border-bottom: none;
+    }
+
+    .cart .cartRow img {
+        width: 40%;
+        max-height: 47.34px;
+    }
+
+    .title {
+        text-align: center;
+        padding: 10px;
+    }
+
+    #editButtons {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        margin: 5px;
+        flex-wrap: wrap;
+    }
+
+    #editButtons a {
+        width: fit-content;
+    }
+
+    #widgets {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: space-evenly;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .widget {
+        min-width: 200px;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
+        background: var(--color-content-background-primary);
+        border-radius: 10px;
+        border: 2.5px solid var(--color-button-hover-background);
+        padding: 5px;
+    }
+
+    .widget.full {
+        width: 100%;
+    }
+
+    .widget h3 {
+        border-radius: 10px;
+        margin: 5px;
+    }
+
+    .widget h4 {
+        border-radius: 10px;
+        margin: 5px;
+        background: var(--color-header-button-hover);
+        border: 2.5px solid var(--color-button-hover-background);
+    }
+
+    .widget>img {
+        width: 75px;
+        padding: 5px;
+        border-radius: 10px;
+        border: 2.5px solid var(--color-button-hover-background);
+    }
+
+    .widget p {
+        text-align: center;
+        margin: 2.5px;
+        padding: 2.5px;
+    }
+
+    #statusList {
+        margin: 10px 0px;
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .status {
+        width: fit-content;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: var(--color-content-background-primary);
+        border-radius: 10px;
+        border: 2.5px solid var(--color-button-hover-background);
+        transition: border-color .25s, background .25s;
+    }
+
+    .status:hover {
+        background: var(--color-content-background-secondary);
+        border-color: var(--color-button-background);
+    }
+
+    .status img {
+        width: 50px;
+    }
+
+    .status .title {
+        text-align: center;
+    }
+
+    #cartContents.realistic {
+        animation: cartContentSlideUp .5s forwards;
+    }
+
+    #cartAppearance:has(.realistic) {
+        width: 200px;
+        margin: 0px auto;
+    }
+
+    #realisticViewToggle {
+        transition: opacity .25s;
+    }
+
+    .red {
+        color: #ff5f57;
+        filter: drop-shadow(0px .5px 1px #e1473f);
+    }
+
+    .widget .publicationSupplies {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: nowrap;
+        margin: 10px;
+    }
+
+    .widget .publicationSupplies img {
+        max-width: 100px;
+        max-height: 128.66px !important;
+        flex: 1;
+        border-radius: 5px;
+        margin: 0px;
+    }
+
+    .widget .publicationSupplies .countControl {
+        flex: 1;
+        /* max-width: fit-content; */
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .widget .publicationSupplies .countControl img {
+        margin: 0px;
+        display: inline;
+        max-width: 25px;
+    }
+
+    .widget .publicationSupplies .countControl p {
+        padding: 0px 10px;
+    }
+
+    @media only screen and (min-width: 830px) {
+        .modal {
+            left: calc((100% - 740px) / 2);
+        }
+    }
+
+    .widget .publication h4 {
+        /* max-width: 38vw; */
+    }
+
+    .widget .split {
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        justify-content: space-evenly;
+        flex-wrap: wrap;
+    }
+
+    .widget .split .publication {
+        max-width: 48%;
+        min-width: 48%;
+        transition: min-width .25s, max-width .25s;
+        padding: 5px;
+        box-sizing: border-box;
+        border: 2.5px solid var(--color-button-hover-background);
+        border-radius: 10px;
+        margin: 5px;
+    }
+
+    @media only screen and (max-width: 650px) {
+        .widget .split .publication {
+            min-width: 100%;
+            max-width: 100%;
+        }
+    }
+
+    @media only screen and (max-width: 340px) {
+        #cartContents {
+            animation: cartContentSlideUp .5s forwards;
+        }
+
+        #realisticViewToggle {
+            opacity: 0;
+        }
+    }
+
+    @media only screen and (max-width: 490px) {
+        .widget {
+            width: 100%;
+        }
+    }
+
+    @keyframes cartContentSlideUp {
+        0% {
+            margin-top: 0px;
+        }
+
+        100% {
+            margin-top: -100px;
+        }
+    }
+</style>
+
+<body>
+    <a class="normal rounded full small" data-page="home"><img src="/assets/icons/back.png">Back</a>
+    <h2 class="center" id="header"><img src="/assets/icons/cart.png">Cart</h2>
+    <div id="cartAppearance">
+        <img onclick="fullScreen(this)" src="/assets/cartCovers/JWORG.png" id="cartCover">
+        <div id="cartContents"></div>
+    </div>
+    <hr>
+    <a class="normal rounded full medium" data-page="editCart"><img src="/assets/icons/pen.png">Choose design</a>
+    <a class="normal rounded full medium" data-page="editCart"><img src="/assets/icons/pen.png">Edit design</a>
+    <a class="normal rounded full medium" data-page="editCart"><img src="/assets/icons/pen.png">Edit cart</a>
+    <a class="normal rounded full medium" onclick="toggleRealisticView()" id='realisticViewToggle'><img
+            src="/assets/icons/eye.png">Change view</a>
+    <div id="widgets">
+        <div class="widget">
+            <h3 class="center"><img src="/assets/icons/info.png">General information</h3>
+            <h4 class="center" id="storageLocation"><img src="/assets/icons/garage.png">Storage location
+                <br><br>
+                <a class="normal rounded full small" target="_blank" href="https://www.google.com/maps/place/">
+                    <img src="/assets/icons/googleMaps.png">
+                </a>
+            </h4>
+            <h4 class="center" id="responsible"><img src="/assets/icons/person.png">Responsible:</h4>
+            <h4 class="center" id="design"><img src="/assets/icons/rulerPen.png">Design:</h4>
+            <h4 class="center" id="number"><img src="/assets/icons/hashtag.png">Number</h4>
+        </div>
+        <div class="widget">
+            <h3 class="center" id="status"><img src="/assets/icons/status.png">Status</h3>
+            <h4 class="center" onclick="changeCartStatus()"></h4>
+            <h4 class=" center" id="laatsteOnderhoud" onclick="changeLastMaintenance();">
+                <img src="/assets/icons/clean.png">Laatste onderhoud:<br>
+                <img src='/assets/icons/pen.png'>
+            </h4>
+        </div>
+        <div class="widget" onclick="editComments(this);">
+            <h3 class="center" id="comments"><img src="/assets/icons/note.png">Comments</h3>
+            <p></p>
+            <p><img src=' /assets/icons/pen.png'></p>
+        </div>
+        <div class="widget full">
+            <h3 class="center" id="supplies"><img src="/assets/icons/shelf.png">Supplies</h3>
+            <a class='normal rounded full small' onclick='createSupplies();'><img src='/assets/icons/add.png'>Add
+                supplies</a>
+            <a class='normal rounded full small' onclick='createSupplies();'><img src='/assets/icons/trash.png'>Reset
+                supplies</a>
+        </div>
+    </div>
+    <div id="modals"></div>
+    </div>
+</body>
+<script>
+
+    function initCart() {
+        session.isRealisticView = false;
+        const cart = data.carts[session.currentCartIndex];
+        const cartContents = document.getElementById("cartContents");
+
+        document.getElementById('header').innerHTML = "<img src='/assets/icons/cart.png'>" + cart.name;
+
+        cartContents.innerHTML = generateCartContentHTML(data.designs[cart.designID].publications);
+
+        document.getElementById("storageLocation").innerHTML = "<img src='/assets/icons/garage.png'>Storage location<br><br>" + data.locations[cart.locationID].name + "<a class='normal rounded full small' target='_blank' href='https://www.google.com/maps/place/" + data.locations[cart.locationID].address + "''><img src='/assets/icons/googleMaps.png'></a>";
+    }
+
+    initCart();
+
+
+    function toggleRealisticView() {
+        const cartContents = document.getElementById("cartContents");
+        session.isRealisticView = !session.isRealisticView;
+
+        if (session.isRealisticView) {
+            cartContents.classList.add("realistic");
+            realisticViewToggle.innerHTML = "<img src='/assets/icons/eyeClosed.png'>Change view";
+        } else {
+            cartContents.classList.remove("realistic");
+            realisticViewToggle.innerHTML = "<img src='/assets/icons/eye.png'>Change view";
+        }
+    }
+</script>

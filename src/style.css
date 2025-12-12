@@ -92,7 +92,7 @@ html {
 
 /* Container */
 
-#container {
+#app {
 	max-width: 1000px;
 	border: 7.5px solid var(--color-content-background-primary);
 	border-radius: 10px;
@@ -334,6 +334,41 @@ form table td:first-child {
 	width: 25%;
 }
 
+form {
+	/* display: flex;
+	flex-direction: column;
+	justify-content: center; */
+	max-width: 500px;
+	margin: 0px auto;
+	padding: 5px;
+}
+
+input::placeholder {
+	opacity: 0.75;
+}
+
+.formGroup {
+	display: flex;
+	flex-direction: row;
+	gap: 10px;
+	margin: 5px 0px;
+	justify-content: center;
+	flex-wrap: nowrap;
+	align-items: center;
+}
+
+.formGroup label {
+	/* align-self: flex-start; */
+	flex: 1;
+	text-align: right;
+}
+
+.formGroup input,
+.formGroup select {
+	flex: 3;
+	/* align-self: flex-end; */
+}
+
 input,
 textarea,
 select,
@@ -343,6 +378,8 @@ option {
 	border: 2px solid var(--color-input-border);
 	background: var(--color-input-background);
 	transition: border 0.25s;
+	border-radius: 10px;
+	padding: 5px;
 }
 input[type="file"] {
 	padding: 25px;
@@ -890,6 +927,10 @@ footer a {
 	backdrop-filter: blur(10px);
 }
 
+#app {
+	transition: opacity 0.15s;
+}
+
 /** Safari */
 @supports (hanging-punctuation: first) and (font: -apple-system-body) and
 	(-webkit-appearance: none) {
@@ -1095,6 +1136,50 @@ input:checked + .slider:before {
 	animation: growSizeRight 0.4s;
 }
 
+#modals {
+	position: relative;
+	z-index: 10;
+}
+
+.modal {
+	position: fixed;
+	top: 5vh;
+	width: 90%;
+	max-width: 740px;
+	overflow-y: scroll;
+	max-height: 85vh;
+	background: var(--color-body-background);
+	border: 2.5px solid var(--color-button-background);
+	border-radius: 10px;
+	left: 5%;
+	padding: 10px;
+	transform: scale(0);
+	transition: transform 0.25s;
+	box-sizing: border-box;
+}
+
+.modalBG {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 200vw;
+	height: 200vh;
+	background: rgba(0, 0, 0, 0);
+	transition: background-color 0.5s;
+}
+
+.modal textarea {
+	width: 80%;
+	min-height: 100px;
+	resize: vertical;
+}
+
+@media only screen and (min-width: 830px) {
+	.modal {
+		left: calc((100% - 740px) / 2);
+	}
+}
+
 @keyframes growSizeLeft {
 	0%,
 	100% {
@@ -1215,7 +1300,7 @@ input:checked + .slider:before {
 	#alertBanner {
 		width: 100%;
 	}
-	#container {
+	#app {
 		width: 97%;
 	}
 	.hero {
@@ -1234,7 +1319,7 @@ input:checked + .slider:before {
 }
 
 @media only screen and (max-width: 455px) {
-	#container {
+	#app {
 		width: 97%;
 	}
 	header,
