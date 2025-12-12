@@ -1,9 +1,10 @@
 //Load general
 import { generateCartContentHTML } from "./scripts/cartContentRenderer.js";
-import { openModal } from "./scripts/modalRenderer.js";
+import { openModal, closeLastModal } from "./scripts/modalRenderer.js";
 
 window.generateCartContentHTML = generateCartContentHTML;
 window.openModal = openModal;
+window.closeLastModal = closeLastModal;
 
 const app = document.getElementById("app");
 window.data = {

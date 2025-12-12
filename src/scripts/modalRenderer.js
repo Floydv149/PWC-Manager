@@ -29,12 +29,13 @@ export function openModal(htmlContent) {
 }
 
 export function closeLastModal() {
-	const modal = document.querySelector("#modals:last-child");
-	if (modalContainer) {
-		modal.firstChild.style.transform = "scale(0)";
-		modal.childNodes[1].parentElement.style.background = "rgba(0, 0, 0, 0)";
+	const modal = document.querySelector("#modals .modalContainer:last-child");
+	console.log(modal);
+	if (modal) {
+		modal.childNodes[0].style.background = "rgba(0, 0, 0, 0)";
+		modal.childNodes[1].style.transform = "scale(0)";
 		setTimeout(function () {
-			modal.parentElement.remove();
-		}, 1000);
+			modal.remove();
+		}, 500);
 	}
 }
