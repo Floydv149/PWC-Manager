@@ -1,12 +1,31 @@
 //Load general
 import { generateCartContentHTML } from "./scripts/cartContentRenderer.js";
-import { openModal, closeLastModal } from "./scripts/modalRenderer.js";
+import {
+	openModal,
+	openYesNoModal,
+	closeLastModal,
+} from "./scripts/modalRenderer.js";
 
 window.generateCartContentHTML = generateCartContentHTML;
 window.openModal = openModal;
+window.openYesNoModal = openYesNoModal;
 window.closeLastModal = closeLastModal;
 
 const app = document.getElementById("app");
+window.defaultData = {
+	cart: {
+		number: 0,
+		name: "",
+		locationID: 0,
+		responsible: "",
+		status: 0,
+		lastCleaned: "0000-00-00",
+		supplies: {},
+		type: 0,
+		designID: 0,
+		comments: "",
+	},
+};
 window.data = {
 	carts: {
 		0: {
@@ -21,7 +40,7 @@ window.data = {
 			},
 			type: 0,
 			designID: 0,
-			comments: "",
+			comments: "Dit is een test-opmerking.",
 		},
 		1: {
 			number: 2,
@@ -95,6 +114,7 @@ let emptyData = {
 };
 
 window.session = {
+	currentYesNoModalAnswer: -1,
 	currentCartIndex: 1,
 	newCart: false,
 	isRealisticView: false,
@@ -177,4 +197,4 @@ function saveData() {
 
 loadData();
 session.currentCartIndex = 1;
-loadPage("editLocations");
+loadPage("home");
