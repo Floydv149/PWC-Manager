@@ -60,6 +60,10 @@
         const cartIndex = session.currentCartIndex;
         const cart = data.carts[cartIndex];
 
+        if (!parseInt(form.number.value)) {
+            form.number.value = 0;
+        }
+
         cart.number = parseInt(form.number.value);
         cart.name = form.name.value;
         cart.locationID = form.location.value;

@@ -434,14 +434,29 @@
 
     function initCart() {
         session.isRealisticView = false;
+
         const cart = data.carts[session.currentCartIndex];
         const cartContents = document.getElementById("cartContents");
+
+        let location;
+        let address;
+        if (cart.locationID in data.locations) {
+            location = data.locations[cart.locationID].name;
+            address = data.locations[cart.locationID].address;
+        } else {
+            location = "No location";
+            address = "";
+        }
 
         document.getElementById('header').innerHTML = "<img src='/assets/icons/cart.png'>" + cart.name;
 
         cartContents.innerHTML = generateCartContentHTML(data.designs[cart.designID].publications);
 
-        document.getElementById("storageLocation").innerHTML = "<img src='/assets/icons/garage.png'>Storage location<br><br>" + data.locations[cart.locationID].name + "<a class='normal rounded full small' target='_blank' href='https://www.google.com/maps/place/" + data.locations[cart.locationID].address + "''><img src='/assets/icons/googleMaps.png'></a>";
+        document.getElementById("storageLocation").innerHTML = "<img src='/assets/icons/garage.png'>Storage location<br><br>" + location
+
+        if (address != "") {
+            document.getElementById("storageLocation").innerHTML += "<a class='normal rounded full small' target='_blank' href='https://www.google.com/maps/place/" + data.locations[cart.locationID].address + "''><img src='/assets/icons/googleMaps.png'></a>";
+        }
     }
 
     initCart();
