@@ -35,7 +35,7 @@ export async function openYesNoModal(
 	yesAnswer,
 	noAnswer
 ) {
-	session.currentYesNoModalAnswer = -1;
+	session.currentModalAnswer = -1;
 
 	return new Promise((resolve) => {
 		const modalHTML =
@@ -48,10 +48,10 @@ export async function openYesNoModal(
 		<div class="modalContent">
 			${questionHTML}
 			<div class="modalButtons">
-				<a class="normal rounded full medium" onclick="session.currentYesNoModalAnswer = 1"><img src="/assets/icons/checkBox.png">` +
+				<a class="normal rounded full medium" onclick="session.currentModalAnswer = 1"><img src="/assets/icons/checkBox.png">` +
 			yesAnswer +
 			`</a>
-				<a class="normal rounded full small" onclick="session.currentYesNoModalAnswer = 0"><img src="/assets/icons/close.png">` +
+				<a class="normal rounded full small" onclick="session.currentModalAnswer = 0"><img src="/assets/icons/close.png">` +
 			noAnswer +
 			`</a>
 			</div>
@@ -60,10 +60,49 @@ export async function openYesNoModal(
 		openModal(modalHTML);
 
 		const checkAnswerInterval = setInterval(() => {
-			if (session.currentYesNoModalAnswer !== -1) {
+			if (session.currentModalAnswer !== -1) {
 				clearInterval(checkAnswerInterval);
-				const answer = session.currentYesNoModalAnswer;
-				session.currentYesNoModalAnswer = -1;
+				const answer = session.currentModalAnswer;
+				session.currentModalAnswer = -1;
+				closeLastModal();
+				resolve(answer === 1);
+			}
+		}, 100);
+	});
+}
+
+export async function openAlertModal(
+	alertHeaderIcon,
+	alertHeaderText,
+	alertHTML,
+	buttonText
+) {
+	session.currentModalAnswer = -1;
+
+	return new Promise((resolve) => {
+		const modalHTML =
+			`
+		<h2 class='center'><img src="/assets/icons/` +
+			alertHeaderIcon +
+			`.png">` +
+			alertHeaderText +
+			`</h2>
+		<div class="modalContent">
+			${alertHTML}
+			<div class="modalButtons">
+				<a class="normal rounded full medium" onclick="session.currentModalAnswer = 1"><img src="/assets/icons/checkBox.png">` +
+			buttonText +
+			`</a>
+			</div>
+		</div>
+		`;
+		openModal(modalHTML);
+
+		const checkAnswerInterval = setInterval(() => {
+			if (session.currentModalAnswer !== -1) {
+				clearInterval(checkAnswerInterval);
+				const answer = session.currentModalAnswer;
+				session.currentModalAnswer = -1;
 				closeLastModal();
 				resolve(answer === 1);
 			}

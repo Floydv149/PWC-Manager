@@ -3,13 +3,16 @@ import { generateCartContentHTML } from "./scripts/cartContentRenderer.js";
 import {
 	openModal,
 	openYesNoModal,
+	openAlertModal,
 	closeLastModal,
 } from "./scripts/modalRenderer.js";
 
 window.generateCartContentHTML = generateCartContentHTML;
 window.openModal = openModal;
+window.openAlertModal = openAlertModal;
 window.openYesNoModal = openYesNoModal;
 window.closeLastModal = closeLastModal;
+window.loadPage = loadPage;
 
 const app = document.getElementById("app");
 window.defaultData = {
@@ -25,6 +28,7 @@ window.defaultData = {
 		designID: 0,
 		comments: "",
 	},
+	location: {},
 };
 window.data = {
 	carts: {
@@ -114,7 +118,7 @@ let emptyData = {
 };
 
 window.session = {
-	currentYesNoModalAnswer: -1,
+	currentModalAnswer: -1,
 	currentCartIndex: 1,
 	newCart: false,
 	isRealisticView: false,
@@ -161,6 +165,10 @@ function loadPageContent(html, pageName) {
 		});
 
 		addButtonRedirects();
+		window.scrollTo({
+			top: 0,
+			behavior: "instant",
+		});
 
 		setTimeout(() => {
 			app.style.opacity = 1;
