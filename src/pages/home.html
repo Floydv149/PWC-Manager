@@ -1,0 +1,121 @@
+<style>
+    #cartsContainer {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .cartBox {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: top;
+        margin: 10px;
+        width: 200px;
+        border: 2.5px solid black;
+        border-radius: 10px;
+        background: var(--color-content-background-secondary);
+    }
+
+    .cartBox:hover .cartHeader {
+        text-decoration: underline;
+    }
+
+    .cartHeader {
+        width: 100%;
+        font-size: 20px;
+        padding: 10px 0px;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .cartPicture {
+        min-width: 144px;
+        min-height: 320px;
+        border-radius: 10px;
+        margin: 0px;
+    }
+
+    .cartName {
+        text-align: center;
+        padding: 10px 0px;
+    }
+
+    @media only screen and (max-width: 500px) {
+        .cartBox {
+            width: 150px !important;
+        }
+
+        .cartPicture {
+            min-width: 108px;
+            min-height: 240px;
+        }
+    }
+</style>
+
+<body>
+    <h2 class="center"><img src="/assets/icons/cart.png">CARTS</h2>
+    <p class="center">Choose a cart to view more information.</p>
+    <hr>
+    <!-- <a class="normal rounded full small" data-page="cartDetails">Trolley 1</a> -->
+    <div id="cartsContainer">
+
+    </div>
+    <hr>
+    <a class='normal rounded full medium' data-page='editCart' onclick="addCart()"><img src='/assets/icons/add.png'>Add
+        new cart</a>
+    <a class='normal rounded full medium' data-page='editLocations' onclick="addCart()"><img
+            src='/assets/icons/pen.png'>Edit locations</a>
+</body>
+<script>
+    function initCarts() {
+        const cartsContainer = document.getElementById('cartsContainer');
+
+        if (data.carts.length === 0) {
+            cartsContainer.innerHTML = "<p class='center'>You don't have any carts registered yet.</p>";
+        } else {
+            for (const cartIndex in data.carts) {
+                const cart = data.carts[cartIndex];
+                let location;
+                if (cart.locationID in data.locations) {
+                    location = data.locations[cart.locationID].name;
+                } else {
+                    location = "No location";
+                }
+
+                const cartBox = document.createElement('div');
+                cartBox.className = "cartBox";
+                cartBox.addEventListener('click', () => {
+                    session.currentCartIndex = cartIndex;
+                });
+
+                cartBox.dataset.page = "cartDetails";
+                cartBox.innerHTML = "<img class='cartPicture' src='/assets/cartCovers/" + data.covers[data.designs[cart.designID].coverID].fileName + "'><div class='cartHeader'>" + cart.number + ". " + cart.name + "</div><div class='cartName'>" + data.locations[cart.locationID].name + "</div></div>";
+                // console.log("last");
+
+                cartsContainer.appendChild(cartBox);
+            }
+        }
+    }
+
+    initCarts();
+
+    function addCart() {
+        const newCart = {
+            number: Object.keys(data.carts).length + 1,
+            name: "",
+            locationID: "",
+            responsible: "",
+            status: 0,
+            lastCleaned: "0000-00-00",
+            supplies: {},
+            designID: 0,
+            comments: ""
+        };
+        data.carts[Object.keys(data.carts).length] = newCart;
+        session.currentCartIndex = Object.keys(data.carts).length - 1;
+        session.newCart = true;
+    }
+
+</script>

@@ -1,0 +1,10 @@
+{
+	"appId": "com.pwcmanager.app",
+	"appName": "PWC-Manager",
+	"webDir": "src",
+	"plugins": {
+		"SplashScreen": {
+			"launchAutoHide": true
+		}
+	}
+}
