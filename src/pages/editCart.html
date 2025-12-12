@@ -22,7 +22,7 @@
         </div>
     </form>
     <hr>
-    <a type="submit" class="normal rounded full medium" onclick="save();" data-page="home"><img
+    <a type="submit" id="saveButton" class="normal rounded full medium" onclick="save();" data-page="home"><img
             src="/assets/icons/save.png">Save
         changes</a>
     <a class="normal rounded full small" data-page="home" onclick="cancel();"><img
@@ -33,6 +33,7 @@
         if (session.newCart) {
             document.getElementById('header').innerHTML = "<img src='/assets/icons/pen.png'>ADD CART";
             document.getElementById('description').innerText = "Fill in the details below to add a new cart.";
+            document.getElementById('saveButton').innerHTML = "<img src='/assets/icons/add.png'>Add cart";
         }
 
         const form = document.getElementById('editCartForm');
