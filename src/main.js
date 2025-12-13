@@ -25,7 +25,7 @@ window.defaultData = {
 		name: "",
 		locationID: 0,
 		responsible: "",
-		status: 0,
+		statusID: 0,
 		lastCleaned: "0000-00-00",
 		supplies: {},
 		type: 0,
@@ -36,6 +36,24 @@ window.defaultData = {
 		name: "",
 		address: "",
 	},
+	statusses: {
+		0: {
+			name: "Ready to use",
+			image: "checkBox",
+		},
+		1: {
+			name: "Needs maintenance",
+			image: "alert",
+		},
+		2: {
+			name: "Under maintenance",
+			image: "clean",
+		},
+		3: {
+			name: "Unavailable",
+			image: "close",
+		},
+	},
 };
 window.data = {
 	carts: {
@@ -44,7 +62,7 @@ window.data = {
 			name: "Cart 1",
 			locationID: 0,
 			responsible: "John Doe",
-			status: 0,
+			statusID: 0,
 			lastCleaned: "0000-00-00",
 			supplies: {
 				1: 2,
@@ -58,7 +76,7 @@ window.data = {
 			name: "Cart 2",
 			locationID: 0,
 			responsible: "Jane Smith",
-			status: 0,
+			statusID: 0,
 			lastCleaned: "0000-00-00",
 			supplies: {
 				1: 4,
@@ -77,6 +95,16 @@ window.data = {
 				[0, 0],
 				[1, 1],
 				[2, 2],
+			],
+		},
+		1: {
+			name: "December 2025",
+			creationDate: "0000-00-00",
+			coverID: 1,
+			publications: [
+				[2, 2],
+				[1, 1],
+				[0, 0],
 			],
 		},
 	},
@@ -111,6 +139,10 @@ window.data = {
 		0: {
 			name: "JW.ORG",
 			fileName: "JWORG.png",
+		},
+		1: {
+			name: "Welkom",
+			fileName: "iedereenIsWelkom.png",
 		},
 	},
 };
