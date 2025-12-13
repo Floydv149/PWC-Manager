@@ -112,7 +112,6 @@ export async function openAlertModal(
 
 export function closeLastModal() {
 	const modal = document.querySelector("#modals .modalContainer:last-child");
-	console.log(modal);
 	if (modal) {
 		modal.childNodes[0].style.background = "rgba(0, 0, 0, 0)";
 		modal.childNodes[1].style.transform = "scale(0)";
