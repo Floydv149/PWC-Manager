@@ -210,6 +210,12 @@
         flex-wrap: wrap;
     }
 
+    #status img:first-child {
+        width: 50px;
+        display: block;
+        margin: -7.5px auto 15px auto;
+    }
+
     .status {
         width: fit-content;
         display: flex;
@@ -356,7 +362,8 @@
     <hr>
     <a class="normal rounded full medium" onclick="toggleRealisticView()" id='realisticViewToggle'><img
             src="/assets/icons/eye.png">Change view</a>
-    <a class="normal rounded full medium"><img src="/assets/icons/list.png">Choose design</a>
+    <a class="normal rounded full medium" onclick="openDesignChooser()"><img src="/assets/icons/list.png">Choose
+        design</a>
     <a class="normal rounded full medium"><img src="/assets/icons/pen.png">Edit current design</a>
     <hr>
     <div id="widgets">
@@ -374,7 +381,7 @@
         </div>
         <div class="widget">
             <h3 class="center"><img src="/assets/icons/status.png">Status</h3>
-            <h4 class="center" id="status" onclick="editCartStatus()"></h4>
+            <div id="status" onclick="changeCartStatus()"></div>
             <h4 class=" center" id="lastMaintenance" onclick="editLastMaintenance();">
                 <img src="/assets/icons/clean.png">Laatste onderhoud:<br>
                 <img src='/assets/icons/pen.png'>
@@ -419,6 +426,7 @@
 
         document.getElementById('header').innerHTML = "<img src='/assets/icons/cart.png'>" + cart.name;
 
+        document.getElementById("cartCover").src = "/assets/cartCovers/" + data.covers[data.designs[cart.designID].coverID].fileName;
         cartContents.innerHTML = generateCartContentHTML(data.designs[cart.designID].publications);
 
         document.getElementById("storageLocation").innerHTML = "<img src='/assets/icons/garage.png'>Storage location<br><br>" + location
@@ -431,14 +439,17 @@
         document.getElementById("design").innerHTML = "<img src='/assets/icons/rulerPen.png'>Design:<br>" + data.designs[cart.designID].name;
         document.getElementById("number").innerHTML = "<img src='/assets/icons/hashtag.png'>Number:<br>" + cart.number;
 
-        document.getElementById("status").innerHTML = cart.status;
+        document.getElementById("status").innerHTML = "<h4 class='center'><img src='/assets/icons/" + defaultData.statusses[cart.statusID].image + ".png'>" + defaultData.statusses[cart.statusID].name + " <img src='/assets/icons/pen.png'></h4>";
         document.getElementById("lastMaintenance").innerHTML = "<img src='/assets/icons/clean.png'>Last maintenance:<br>" + cart.lastCleaned + "<br><img src='/assets/icons/pen.png'>";
 
-        document.getElementById("comments").innerHTML = cart.comments;
+        if (cart.comments == "") {
+            document.getElementById("comments").innerHTML = "No comments.";
+        } else {
+            document.getElementById("comments").innerHTML = cart.comments;
+        }
     }
 
     initCart();
-
 
     function toggleRealisticView() {
         const cartContents = document.getElementById("cartContents");
@@ -453,6 +464,48 @@
         }
     }
 
+    function openDesignChooser() {
+        let modalContent = "<h2 class='center'><img src='/assets/icons/list.png'>CHOOSE THE DESIGN</h2><p class='center'>Choose below which of the available designs you want to apply to this cart.</p><hr><a class='normal rounded full medium' onclick='closeLastModal()'><img src='/assets/icons/close.png'>Cancel</a><hr>";
+
+        if (data.designs.length == 0) {
+            modalContent += "<p class='center'>There are no designs available. Please add designs first.</p>";
+        } else {
+            modalContent += `<div id="designs">`;
+
+            for (const designID in data.designs) {
+                const design = data.designs[designID];
+
+                modalContent += `<div class="design" onclick="setCartDesign('` + designID + `')">
+                <div class="looks">
+                    <div class="cover">
+                        <img src="/assets/cartCovers/`+ data.covers[design.coverID].fileName + `">
+                    </div>
+                    <div class="cart">`;
+
+                modalContent += generateCartContentHTML(design.publications);
+
+                modalContent += `</div>
+                </div>
+                <div class="title">`+ design.name + `</div>
+            </div>`;
+            }
+
+            modalContent += `</div>`;
+
+        }
+
+        openModal(modalContent);
+    }
+
+    function setCartDesign(designID) {
+        data.carts[session.currentCartIndex].designID = designID;
+
+        saveData();
+        initCart();
+
+        closeLastModal();
+    }
+
     function deleteCart() {
         openYesNoModal("trash", "DELETE CART", "<p class='center'>Are you sure you want to delete this cart?<br>All it's data will be lost.</p><p class='center'>This action cannot be undone.</p>", "Yes", "No").then((result) => {
             if (result) {
@@ -462,6 +515,44 @@
                 });
             }
         });
+    }
+
+    //Statusses
+    // 0: Ready to use
+    // 1: Needs maintenance
+    // 2: Under maintenance
+    // 3: Unavailable
+
+    function changeCartStatus() {
+        let modalContent = `
+            <h2 class="center"><img src="/assets/icons/status.png">CHANGE STATUS</h2>
+            <p class="center">Change the status for this cart.</p>
+            <hr>
+            <div id="statusList">`;
+
+        for (const statusID in defaultData.statusses) {
+            console.log(statusID);
+            modalContent += `<div class="status" onclick="setStatus('` + statusID + `')">
+                <img src="/assets/icons/`+ defaultData.statusses[statusID].image + `.png">
+                <div class="title">`+ defaultData.statusses[statusID].name + `</div>
+            </div>`
+        }
+
+        modalContent += `</div>
+        <hr>
+        <a type="submit" class="normal rounded full medium" onclick="saveStatus()"><img src="/assets/icons/save.png">Save changes</a>
+        <a class="normal rounded full medium" onclick="closeLastModal();"><img src="/assets/icons/close.png">Cancel</a>`;
+
+        openModal(modalContent);
+    }
+
+    function setStatus(type) {
+        console.log(type);
+        data.carts[session.currentCartIndex].statusID = type;
+
+        saveData();
+        closeLastModal();
+        initCart();
     }
 
     function editLastMaintenance() {
