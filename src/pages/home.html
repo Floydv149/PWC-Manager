@@ -65,8 +65,7 @@
     <hr>
     <a class='normal rounded full medium' data-page='editCart' onclick="addCart()"><img src='/assets/icons/add.png'>Add
         new cart</a>
-    <a class='normal rounded full medium' data-page='editLocations' onclick="addCart()"><img
-            src='/assets/icons/pen.png'>Edit locations</a>
+    <a class='normal rounded full medium' data-page='editLocations'><img src='/assets/icons/pen.png'>Edit locations</a>
 </body>
 <script>
     function initCarts() {
@@ -77,6 +76,7 @@
         } else {
             for (const cartIndex in data.carts) {
                 const cart = data.carts[cartIndex];
+
                 let location;
                 if (cart.locationID in data.locations) {
                     location = data.locations[cart.locationID].name;
@@ -91,8 +91,7 @@
                 });
 
                 cartBox.dataset.page = "cartDetails";
-                cartBox.innerHTML = "<img class='cartPicture' src='/assets/cartCovers/" + data.covers[data.designs[cart.designID].coverID].fileName + "'><div class='cartHeader'>" + cart.number + ". " + cart.name + "</div><div class='cartName'>" + data.locations[cart.locationID].name + "</div></div>";
-                // console.log("last");
+                cartBox.innerHTML = "<img class='cartPicture' src='/assets/cartCovers/" + data.covers[data.designs[cart.designID].coverID].fileName + "'><div class='cartHeader'>" + cart.number + ". " + cart.name + "</div><div class='cartName'>" + location + "</div></div>";
 
                 cartsContainer.appendChild(cartBox);
             }
@@ -102,17 +101,9 @@
     initCarts();
 
     function addCart() {
-        const newCart = {
-            number: Object.keys(data.carts).length + 1,
-            name: "",
-            locationID: "",
-            responsible: "",
-            status: 0,
-            lastCleaned: "0000-00-00",
-            supplies: {},
-            designID: 0,
-            comments: ""
-        };
+        const newCart = { ...defaultData.cart };
+        newCart.number = Object.keys(data.carts).length + 1;
+
         data.carts[Object.keys(data.carts).length] = newCart;
         session.currentCartIndex = Object.keys(data.carts).length - 1;
         session.newCart = true;

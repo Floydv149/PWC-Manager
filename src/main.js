@@ -1,11 +1,42 @@
 //Load general
 import { generateCartContentHTML } from "./scripts/cartContentRenderer.js";
-import { openModal } from "./scripts/modalRenderer.js";
+import {
+	openModal,
+	openYesNoModal,
+	openAlertModal,
+	closeLastModal,
+} from "./scripts/modalRenderer.js";
+import { fullScreen, closeFullScreen } from "./scripts/fullScreen.js";
 
 window.generateCartContentHTML = generateCartContentHTML;
 window.openModal = openModal;
+window.openAlertModal = openAlertModal;
+window.openYesNoModal = openYesNoModal;
+window.closeLastModal = closeLastModal;
+window.fullScreen = fullScreen;
+window.closeFullScreen = closeFullScreen;
+window.loadPage = loadPage;
+window.navigateBack = navigateBack;
 
 const app = document.getElementById("app");
+window.defaultData = {
+	cart: {
+		number: 0,
+		name: "",
+		locationID: 0,
+		responsible: "",
+		status: 0,
+		lastCleaned: "0000-00-00",
+		supplies: {},
+		type: 0,
+		designID: 0,
+		comments: "",
+	},
+	location: {
+		name: "",
+		address: "",
+	},
+};
 window.data = {
 	carts: {
 		0: {
@@ -20,7 +51,7 @@ window.data = {
 			},
 			type: 0,
 			designID: 0,
-			comments: "",
+			comments: "Dit is een test-opmerking.",
 		},
 		1: {
 			number: 2,
@@ -86,20 +117,16 @@ window.data = {
 
 window.saveData = saveData;
 
-//Empty data
-let emptyData = {
-	carts: {},
-	designs: {},
-	locations: {},
-};
-
 window.session = {
+	currentModalAnswer: -1,
 	currentCartIndex: 1,
 	newCart: false,
 	isRealisticView: false,
+	currentPage: "",
+	pageHistory: [],
 };
 
-async function loadPage(pageName) {
+async function loadPage(pageName, saveHistory = true) {
 	try {
 		setTimeout(async () => {
 			app.style.opacity = 0;
@@ -109,6 +136,10 @@ async function loadPage(pageName) {
 
 			const html = await response.text();
 
+			if (saveHistory) {
+				session.pageHistory.push(session.currentPage);
+				session.currentPage = pageName;
+			}
 			loadPageContent(html, pageName);
 		}, 0);
 	} catch (err) {
@@ -140,11 +171,26 @@ function loadPageContent(html, pageName) {
 		});
 
 		addButtonRedirects();
+		window.scrollTo({
+			top: 0,
+			behavior: "instant",
+		});
 
 		setTimeout(() => {
 			app.style.opacity = 1;
 		}, 0);
 	}, 150);
+}
+
+function navigateBack() {
+	if (
+		session.pageHistory.length > 0 &&
+		session.pageHistory[session.pageHistory.length - 1] != ""
+	) {
+		loadPage(session.pageHistory.pop(), false);
+	} else {
+		loadPage("home", false);
+	}
 }
 
 function removeOldScripts() {
@@ -176,4 +222,4 @@ function saveData() {
 
 loadData();
 session.currentCartIndex = 1;
-loadPage("editLocations");
+loadPage("cartDetails");

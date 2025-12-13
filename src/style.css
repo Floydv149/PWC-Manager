@@ -11,6 +11,7 @@
 	--color-content-background-primary: #636363;
 	--color-content-background-secondary: #555555;
 	--color-text-primary: #ffffff;
+	--color-text-secondary: #d4d4d4;
 	--color-input-background: #717171;
 	--color-input-border: #909090;
 	--color-accent: #006eff;
@@ -97,7 +98,7 @@ html {
 	border: 7.5px solid var(--color-content-background-primary);
 	border-radius: 10px;
 	padding: 10px 0px;
-	margin: 15px auto;
+	margin: 35px auto;
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 	animation: fadeIn 0.25s ease-in;
 }
@@ -268,6 +269,7 @@ a img {
 	width: auto !important;
 	vertical-align: baseline;
 }
+
 a.small img {
 	height: 15px !important;
 	margin: -2px 10px -2px 0px !important;
@@ -279,6 +281,10 @@ a.medium img {
 a.large img {
 	height: 35px !important;
 	margin: -4px 10px -7px 0px !important;
+}
+
+a.iconOnly img {
+	margin-right: 0px !important;
 }
 .alinable {
 	display: block;
@@ -931,6 +937,10 @@ footer a {
 	transition: opacity 0.15s;
 }
 
+.subText {
+	color: var(--color-text-secondary);
+}
+
 /** Safari */
 @supports (hanging-punctuation: first) and (font: -apple-system-body) and
 	(-webkit-appearance: none) {
@@ -1137,25 +1147,37 @@ input:checked + .slider:before {
 }
 
 #modals {
-	position: relative;
+	position: fixed;
 	z-index: 10;
+
+	inset: 0;
+
+	display: grid;
+	place-items: center;
+	pointer-events: none;
 }
 
 .modal {
 	position: fixed;
-	top: 5vh;
-	width: 90%;
+	pointer-events: auto;
+
+	inset: 0;
+	margin: auto;
+	height: fit-content;
+
+	width: 90vw;
 	max-width: 740px;
-	overflow-y: scroll;
+
+	overflow-y: auto;
 	max-height: 85vh;
 	background: var(--color-body-background);
 	border: 2.5px solid var(--color-button-background);
 	border-radius: 10px;
-	left: 5%;
 	padding: 10px;
 	transform: scale(0);
 	transition: transform 0.25s;
 	box-sizing: border-box;
+	z-index: 100;
 }
 
 .modalBG {
@@ -1166,18 +1188,13 @@ input:checked + .slider:before {
 	height: 200vh;
 	background: rgba(0, 0, 0, 0);
 	transition: background-color 0.5s;
+	z-index: 100;
 }
 
 .modal textarea {
 	width: 80%;
 	min-height: 100px;
 	resize: vertical;
-}
-
-@media only screen and (min-width: 830px) {
-	.modal {
-		left: calc((100% - 740px) / 2);
-	}
 }
 
 @keyframes growSizeLeft {

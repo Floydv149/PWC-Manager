@@ -10,7 +10,7 @@
         border: 2.5px solid var(--color-input-border);
         background: var(--color-input-background);
         border-radius: 10px;
-        padding: 5px 10px;
+        /* padding: 5px 10px; */
         margin: 5px 5px;
         display: flex;
         flex-direction: row;
@@ -20,66 +20,150 @@
 
     .locationBox .locationName {
         flex-grow: 2;
+        padding: 5px;
     }
 
     .locationBox img {
         width: 30px;
         height: 30px;
+        margin: 0px;
+        display: block;
         justify-self: flex-end;
+    }
+
+    .locationBox img:first-child {
+        margin-right: 10px;
+    }
+
+    .locationBox img:nth-child(1) {
+        margin-left: 10px;
+    }
+
+    .locationBox img:last-child {
+        margin-left: 5px;
+        margin-right: 5px;
+        border-left: 2.5px solid var(--color-input-border);
     }
 </style>
 
 <body>
+    <a class="normal rounded full small" onclick="navigateBack()"><img src="/assets/icons/back.png">Back</a>
     <h2 class="center" id="header"><img src="/assets/icons/pen.png">EDIT LOCATIONS</h2>
-    <p class="center" id="description">Edit the locations below.</p>
+    <p class="center" id="description">Edit the locations below or add one.</p>
     <hr>
     <div id="locationsList">
-
     </div>
+    <hr>
+    <a class="normal rounded full medium" onclick="addLocation()"><img src="/assets/icons/add.png">Add
+        location</a>
 </body>
 <script>
     function initLocationsList() {
         const locationsList = document.getElementById('locationsList');
 
-        for (const locationID in data.locations) {
-            let locationButtonContent = "<div class='locationBox'>";
+        locationsList.innerHTML = "";
 
-            const location = data.locations[locationID];
+        if (Object.keys(data.locations).length === 0) {
+            locationsList.innerHTML = "<p class='center'>No locations have been added yet.</p>";
+        } else {
 
-            locationButtonContent += "<div class='locationName'>" + location.name + "</div>";
-            locationButtonContent += "<img src='/assets/icons/pen.png'><img src='/assets/icons/trash.png'></div>";
+            for (const locationID in data.locations) {
+                let locationButtonContent = "<div class='locationBox'>";
 
-            locationsList.innerHTML += locationButtonContent;
+                const location = data.locations[locationID];
+
+                locationButtonContent += "<img src='/assets/icons/mapPin.png'><div class='locationName'>" + location.name + "<br><span class='subText'>" + location.address + "</span></div>";
+                locationButtonContent += "<img src='/assets/icons/pen.png' onclick='openEditLocationModal(" + locationID + ")'><img src='/assets/icons/trash.png' onclick='deleteLocation(" + locationID + ")'></div>";
+
+                locationsList.innerHTML += locationButtonContent;
+            }
         }
-
-        setTimeout(() => {
-            openModal("hi");
-        }, 1000);
-
     }
 
     initLocationsList();
 
-    function save() {
-        const form = document.getElementById('editCartForm');
-        const cartIndex = session.currentCartIndex;
-        const cart = data.carts[cartIndex];
-
-        cart.number = parseInt(form.number.value);
-        cart.name = form.name.value;
-        cart.locationID = form.location.value;
-        cart.responsible = form.responsible.value;
-
-        saveData();
-        session.newCart = false;
+    function deleteLocation(locationID) {
+        openYesNoModal("trash", "DELETE LOCATION", "<p class='center'>Are you sure you want to delete this location? This will also clear the location data from all carts using this location.</p><p class='center'>This action cannot be undone.</p>", "Yes", "No").then((result) => {
+            if (result) {
+                deleteLocationData(locationID);
+                openAlertModal("checkBox", "LOCATION DELETED", "<p class='center'>The location has been deleted successfully.</p>", "Great").then(() => {
+                    initLocationsList();
+                });
+            }
+        });
     }
 
-    function cancel() {
-        if (session.newCart) {
-            delete data.carts[session.currentCartIndex];
+    function deleteLocationData(locationID) {
+        //Delete location from data
+        delete data.locations[locationID];
+
+        //Clear location from carts
+        for (const cartIndex in data.carts) {
+            const cart = data.carts[cartIndex];
+            if (cart.locationID == locationID) {
+                cart.locationID = "";
+            }
         }
 
-        session.newCart = false;
         saveData();
     }
+
+    function addLocation() {
+        const newLocation = { ...defaultData.location };
+
+        data.locations[Object.keys(data.locations).length] = newLocation;
+
+        saveData();
+
+        openEditLocationModal(Object.keys(data.locations).length - 1).then(() => {
+            initLocationsList();
+        });
+    }
+
+    function editLocation(locationID) {
+        openEditLocationModal(locationID).then(() => {
+            initLocationsList();
+        });
+    }
+
+    function openEditLocationModal(locationID) {
+        openModal(`
+            <h2 class="center"><img src="/assets/icons/pen.png">EDIT LOCATION</h2>
+            <form id="editLocationForm">
+                <div class="formGroup">
+                    <label for="name">Name</label>
+                    <input type="text" name="name" placeholder="Enter location name" required value="${data.locations[locationID].name}">
+                </div>
+                <div class="formGroup">
+                    <label for="address">Address</label>
+                    <input type="text" name="address" placeholder="Enter location address" required value="${data.locations[locationID].address}">
+                </div>
+            </form>
+            <hr>
+            <a class="normal rounded full medium" onclick="saveLocation(${locationID});"><img src="/assets/icons/save.png">Save</a>
+            <a class="normal rounded full medium" onclick="closeLastModal();"><img src="/assets/icons/close.png">Cancel</a>
+        `)
+    }
+
+    function saveLocation(locationID) {
+        const form = document.getElementById('editLocationForm');
+
+        if (form.name.value == "") {
+            form.name.value = "Untitled";
+        }
+        if (form.address.value == "") {
+            form.address.value = "No address";
+        }
+
+        const location = data.locations[locationID];
+
+        location.name = form.name.value;
+        location.address = form.address.value;
+
+        saveData();
+        initLocationsList();
+
+        closeLastModal();
+    }
+
 </script>
