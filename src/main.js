@@ -6,13 +6,17 @@ import {
 	openAlertModal,
 	closeLastModal,
 } from "./scripts/modalRenderer.js";
+import { fullScreen, closeFullScreen } from "./scripts/fullScreen.js";
 
 window.generateCartContentHTML = generateCartContentHTML;
 window.openModal = openModal;
 window.openAlertModal = openAlertModal;
 window.openYesNoModal = openYesNoModal;
 window.closeLastModal = closeLastModal;
+window.fullScreen = fullScreen;
+window.closeFullScreen = closeFullScreen;
 window.loadPage = loadPage;
+window.navigateBack = navigateBack;
 
 const app = document.getElementById("app");
 window.defaultData = {
@@ -28,7 +32,10 @@ window.defaultData = {
 		designID: 0,
 		comments: "",
 	},
-	location: {},
+	location: {
+		name: "",
+		address: "",
+	},
 };
 window.data = {
 	carts: {
@@ -110,21 +117,16 @@ window.data = {
 
 window.saveData = saveData;
 
-//Empty data
-let emptyData = {
-	carts: {},
-	designs: {},
-	locations: {},
-};
-
 window.session = {
 	currentModalAnswer: -1,
 	currentCartIndex: 1,
 	newCart: false,
 	isRealisticView: false,
+	currentPage: "",
+	pageHistory: [],
 };
 
-async function loadPage(pageName) {
+async function loadPage(pageName, saveHistory = true) {
 	try {
 		setTimeout(async () => {
 			app.style.opacity = 0;
@@ -134,6 +136,10 @@ async function loadPage(pageName) {
 
 			const html = await response.text();
 
+			if (saveHistory) {
+				session.pageHistory.push(session.currentPage);
+				session.currentPage = pageName;
+			}
 			loadPageContent(html, pageName);
 		}, 0);
 	} catch (err) {
@@ -176,6 +182,17 @@ function loadPageContent(html, pageName) {
 	}, 150);
 }
 
+function navigateBack() {
+	if (
+		session.pageHistory.length > 0 &&
+		session.pageHistory[session.pageHistory.length - 1] != ""
+	) {
+		loadPage(session.pageHistory.pop(), false);
+	} else {
+		loadPage("home", false);
+	}
+}
+
 function removeOldScripts() {
 	document.querySelectorAll("script[page-script]").forEach((s) => s.remove());
 }
@@ -205,4 +222,4 @@ function saveData() {
 
 loadData();
 session.currentCartIndex = 1;
-loadPage("home");
+loadPage("cartDetails");
