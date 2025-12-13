@@ -394,6 +394,9 @@
         </div>
         <div class="widget full">
             <h3 class="center" id="supplies"><img src="/assets/icons/shelf.png">Supplies</h3>
+
+            <div id="cartSupplies"></div>
+
             <a class='normal rounded full small' onclick='createSupplies();'><img src='/assets/icons/add.png'>Add
                 supplies</a>
             <a class='normal rounded full small' onclick='createSupplies();'><img src='/assets/icons/trash.png'>Reset
@@ -447,9 +450,58 @@
         } else {
             document.getElementById("comments").innerHTML = cart.comments;
         }
+
+        const cartSupplies = document.getElementById("cartSupplies");
+        let cartSuppliesContent = "<div class='split'>";
+
+        for (const publicationID in cart.supplies) {
+            const publication = data.catalog[publicationID];
+
+            cartSuppliesContent += `
+                <div class="publication">
+                    <h4 class="center">`+ publication.title + `</h4>
+                    <div class="publicationSupplies">
+                        <img onclick="fullScreen(this)" src="`+ publication.imageURL + `">
+                        <div class="countControl">
+                            <img src="/assets/icons/remove.png" onclick="removeSupplies(this, '`+ publicationID + `')">
+                            <p>`+ cart.supplies[publicationID] + `</p>
+                            <img src="/assets/icons/add.png" onclick="addSupplies(this, '`+ publicationID + `')">
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        cartSuppliesContent += "</div>";
+
+        cartSupplies.innerHTML = cartSuppliesContent;
     }
 
     initCart();
+
+    function addSupplies(element, publicationID) {
+
+        numberElement = element.parentElement.childNodes[3];
+        numberElement.innerHTML = parseInt(numberElement.innerHTML) + 1;
+
+        updateSupplies(publicationID, 1);
+    }
+
+    function removeSupplies(element, publicationID) {
+
+        numberElement = element.parentElement.childNodes[3];
+
+        if (parseInt(numberElement.innerHTML) > 0) {
+            numberElement.innerHTML = parseInt(numberElement.innerHTML) - 1;
+            updateSupplies(publicationID, -1);
+        }
+    }
+
+    function updateSupplies(publicationID, quantityChange) {
+        data.carts[session.currentCartIndex].supplies[publicationID] += quantityChange;
+
+        saveData();
+    }
 
     function toggleRealisticView() {
         const cartContents = document.getElementById("cartContents");
