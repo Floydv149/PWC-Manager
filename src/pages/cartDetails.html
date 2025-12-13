@@ -354,10 +354,11 @@
         <div id="cartContents"></div>
     </div>
     <hr>
-    <a class="normal rounded full medium"><img src="/assets/icons/pen.png">Choose design</a>
-    <a class="normal rounded full medium"><img src="/assets/icons/pen.png">Edit design</a>
     <a class="normal rounded full medium" onclick="toggleRealisticView()" id='realisticViewToggle'><img
             src="/assets/icons/eye.png">Change view</a>
+    <a class="normal rounded full medium"><img src="/assets/icons/list.png">Choose design</a>
+    <a class="normal rounded full medium"><img src="/assets/icons/pen.png">Edit current design</a>
+    <hr>
     <div id="widgets">
         <div class="widget">
             <h3 class="center"><img src="/assets/icons/info.png">General information</h3>
@@ -372,16 +373,16 @@
             <h4 class="center" id="number"><img src="/assets/icons/hashtag.png">Number</h4>
         </div>
         <div class="widget">
-            <h3 class="center" id="status"><img src="/assets/icons/status.png">Status</h3>
-            <h4 class="center" onclick="changeCartStatus()"></h4>
-            <h4 class=" center" id="laatsteOnderhoud" onclick="changeLastMaintenance();">
+            <h3 class="center"><img src="/assets/icons/status.png">Status</h3>
+            <h4 class="center" id="status" onclick="editCartStatus()"></h4>
+            <h4 class=" center" id="lastMaintenance" onclick="editLastMaintenance();">
                 <img src="/assets/icons/clean.png">Laatste onderhoud:<br>
                 <img src='/assets/icons/pen.png'>
             </h4>
         </div>
         <div class="widget" onclick="editComments(this);">
-            <h3 class="center" id="comments"><img src="/assets/icons/note.png">Comments</h3>
-            <p></p>
+            <h3 class="center"><img src="/assets/icons/note.png" onclick="editComments()">Comments</h3>
+            <p id="comments"></p>
             <p><img src=' /assets/icons/pen.png'></p>
         </div>
         <div class="widget full">
@@ -423,8 +424,17 @@
         document.getElementById("storageLocation").innerHTML = "<img src='/assets/icons/garage.png'>Storage location<br><br>" + location
 
         if (address != "") {
-            document.getElementById("storageLocation").innerHTML += "<a class='normal rounded full small' target='_blank' href='https://www.google.com/maps/place/" + data.locations[cart.locationID].address + "''><img src='/assets/icons/googleMaps.png'></a>";
+            document.getElementById("storageLocation").innerHTML += "<a class='normal rounded full small' target='_blank' href='https://www.google.com/maps/place/" + address + "''><img src='/assets/icons/googleMaps.png'>" + address + "</a>";
         }
+
+        document.getElementById("responsible").innerHTML = "<img src='/assets/icons/person.png'>Responsible:<br>" + cart.responsible;
+        document.getElementById("design").innerHTML = "<img src='/assets/icons/rulerPen.png'>Design:<br>" + data.designs[cart.designID].name;
+        document.getElementById("number").innerHTML = "<img src='/assets/icons/hashtag.png'>Number:<br>" + cart.number;
+
+        document.getElementById("status").innerHTML = cart.status;
+        document.getElementById("lastMaintenance").innerHTML = "<img src='/assets/icons/clean.png'>Last maintenance:<br>" + cart.lastCleaned + "<br><img src='/assets/icons/pen.png'>";
+
+        document.getElementById("comments").innerHTML = cart.comments;
     }
 
     initCart();
@@ -452,5 +462,66 @@
                 });
             }
         });
+    }
+
+    function editLastMaintenance() {
+        openModal(`
+            <h2 class="center"><img src="/assets/icons/clean.png">EDIT LAST MAINTENANCE</h2>
+            <p class="center">Edit the last maintenance date for this cart.</p>
+            <hr>
+            <form id="editLastMaintenanceForm">
+                <div class="formGroup">
+                    <input type="date" name="lastMaintenance" required value="${data.carts[session.currentCartIndex].lastCleaned}">
+                </div>
+            </form>
+            <a class="normal rounded small full" onclick="setMaintenanceToday()"><img src="/assets/icons/calendar.png">Set to today</a>
+            <hr>
+            <a type="submit" class="normal rounded full medium" onclick="saveLastMaintenance()"><img src="/assets/icons/save.png">Save changes</a>
+            <a class="normal rounded full medium" onclick="closeLastModal();"><img src="/assets/icons/close.png">Cancel</a>
+        `);
+    }
+
+    function setMaintenanceToday() {
+        const form = document.getElementById('editLastMaintenanceForm');
+        const today = new Date().toISOString().split('T')[0];
+        form.lastMaintenance.value = today;
+    }
+
+    function saveLastMaintenance() {
+        const form = document.getElementById('editLastMaintenanceForm');
+
+        data.carts[session.currentCartIndex].lastCleaned = form.lastMaintenance.value;
+
+        saveData();
+        initCart();
+
+        closeLastModal();
+    }
+
+    function editComments() {
+        openModal(`
+            <h2 class="center"><img src="/assets/icons/note.png">EDIT COMMENTS</h2>
+            <p class="center">Edit the comments for this cart.</p>
+            <hr>
+            <form id="editCommentsForm">
+                <div class="formGroup">
+                    <textarea name="comments" placeholder="Enter comments here..." required>${data.carts[session.currentCartIndex].comments}</textarea>
+                </div>
+            </form>
+            <hr>
+            <a type="submit" class="normal rounded full medium" onclick="saveComments()"><img src="/assets/icons/save.png">Save changes</a>
+            <a class="normal rounded full medium" onclick="closeLastModal();"><img src="/assets/icons/close.png">Cancel</a>
+        `);
+    }
+
+    function saveComments(locationID) {
+        const form = document.getElementById('editCommentsForm');
+
+        data.carts[session.currentCartIndex].comments = form.comments.value;
+
+        saveData();
+        initCart();
+
+        closeLastModal();
     }
 </script>
