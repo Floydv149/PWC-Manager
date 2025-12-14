@@ -310,18 +310,18 @@
     .widget .split .publication {
         max-width: 48%;
         min-width: 48%;
-        transition: min-width .25s, max-width .25s;
         padding: 5px;
-        box-sizing: border-box;
         border: 2.5px solid var(--color-button-hover-background);
         border-radius: 10px;
         margin: 5px;
+        box-sizing: border-box;
+        transition: min-width .25s, max-width .25s;
     }
 
     @media only screen and (max-width: 650px) {
         .widget .split .publication {
-            min-width: 100%;
-            max-width: 100%;
+            width: 100%;
+            max-width: calc(100% - 10px);
         }
     }
 
