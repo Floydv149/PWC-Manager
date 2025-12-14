@@ -80,6 +80,7 @@ window.data = {
 			lastCleaned: "0000-00-00",
 			supplies: {
 				1: 4,
+				0: 3,
 			},
 			type: 0,
 			designID: 0,
@@ -119,20 +120,24 @@ window.data = {
 		},
 	},
 	catalog: {
+		X: {
+			title: "Other languages",
+			imageURL: "/assets/icons/unknownLanguage.png",
+		},
 		0: {
-			title: "Alles wordt duurder wat nu?",
+			title: "Coping with rising prices",
 			imageURL:
-				"https://cms-imgp.jw-cdn.org/img/p/g/202511/O/pt/g_O_202511_lg.jpg",
+				"https://cms-imgp.jw-cdn.org/img/p/g/202511/E/pt/g_E_202511_lg.jpg",
 		},
 		1: {
-			title: "Waar is het respect gebleven?",
+			title: "What has happened to respect?",
 			imageURL:
-				"https://cms-imgp.jw-cdn.org/img/p/g/202411/O/pt/g_O_202411_lg.jpg",
+				"https://cms-imgp.jw-cdn.org/img/p/g/202411/E/pt/g_E_202411_lg.jpg",
 		},
 		2: {
-			title: "Is er hoop voor onze planeet?",
+			title: "Can our planet survive?",
 			imageURL:
-				"https://cms-imgp.jw-cdn.org/img/p/g/202311/O/pt/g_O_202311_lg.jpg",
+				"https://cms-imgp.jw-cdn.org/img/p/g/202311/E/pt/g_E_202311_lg.jpg",
 		},
 	},
 	covers: {
