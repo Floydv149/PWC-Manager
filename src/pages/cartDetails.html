@@ -397,9 +397,11 @@
 
             <div id="cartSupplies"></div>
 
-            <a class='normal rounded full small' onclick='createSupplies();'><img src='/assets/icons/add.png'>Add
+            <hr>
+
+            <a class='normal rounded full small' onclick='addSupplies();'><img src='/assets/icons/add.png'>Add
                 supplies</a>
-            <a class='normal rounded full small' onclick='createSupplies();'><img src='/assets/icons/trash.png'>Reset
+            <a class='normal rounded full small' onclick='resetSupplies();'><img src='/assets/icons/trash.png'>Reset
                 supplies</a>
         </div>
     </div>
@@ -452,12 +454,17 @@
         }
 
         const cartSupplies = document.getElementById("cartSupplies");
-        let cartSuppliesContent = "<div class='split'>";
 
-        for (const publicationID in cart.supplies) {
-            const publication = data.catalog[publicationID];
+        if (Object.keys(cart.supplies).length === 0) {
+            cartSupplies.innerHTML = "<br><p class='center'>No supplies have added yet.</p>";
+        } else {
 
-            cartSuppliesContent += `
+            let cartSuppliesContent = "<div class='split'>";
+
+            for (const publicationID in cart.supplies) {
+                const publication = data.catalog[publicationID];
+
+                cartSuppliesContent += `
                 <div class="publication">
                     <h4 class="center">`+ publication.title + `</h4>
                     <div class="publicationSupplies">
@@ -470,11 +477,12 @@
                     </div>
                 </div>
             `;
+            }
+
+            cartSuppliesContent += "</div>";
+
+            cartSupplies.innerHTML = cartSuppliesContent;
         }
-
-        cartSuppliesContent += "</div>";
-
-        cartSupplies.innerHTML = cartSuppliesContent;
     }
 
     initCart();
@@ -494,6 +502,14 @@
         if (parseInt(numberElement.innerHTML) > 0) {
             numberElement.innerHTML = parseInt(numberElement.innerHTML) - 1;
             updateSupplies(publicationID, -1);
+        } else {
+            openYesNoModal("trash", "REMOVE PUBLICATION", "<p class='center'>Are you sure you want to remove this publication from the cart supplies?</p>", "Yes", "No").then((result) => {
+                if (result) {
+                    delete data.carts[session.currentCartIndex].supplies[publicationID];
+                    saveData();
+                    initCart();
+                }
+            });
         }
     }
 
@@ -666,5 +682,22 @@
         initCart();
 
         closeLastModal();
+    }
+
+    function resetSupplies() {
+        openYesNoModal("trash", "RESET SUPPLIES", "<p class='center'>Are you sure you want to reset all supplies in this cart?</p><p class='center'>This action cannot be undone.</p>", "Yes", "No").then((result) => {
+            if (result) {
+                const newSupplies = {};
+                const designPublications = data.designs[data.carts[session.currentCartIndex].designID].publications;
+
+                for (const publicationID in designPublications) {
+                    newSupplies[publicationID] = 0;
+                }
+
+                data.carts[session.currentCartIndex].supplies = newSupplies;
+                saveData();
+                initCart();
+            }
+        });
     }
 </script>
