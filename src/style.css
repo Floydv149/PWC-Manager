@@ -113,6 +113,9 @@ h5,
 h6 {
 	color: var(--color-header-text);
 	background: var(--color-header-background);
+	-webkit-user-select: none; /* Safari */
+	-ms-user-select: none; /* IE 10 and IE 11 */
+	user-select: none; /* Standard syntax */
 }
 
 h1 {
@@ -212,6 +215,9 @@ a {
 	text-decoration: none;
 	color: var(--color-text-primary);
 	margin: 5px;
+	-webkit-user-select: none; /* Safari */
+	-ms-user-select: none; /* IE 10 and IE 11 */
+	user-select: none; /* Standard syntax */
 	transition: color 0.25s, background-color 0.25s, text-decoration 0.25s;
 }
 a:hover {
@@ -1195,6 +1201,13 @@ input:checked + .slider:before {
 	width: 80%;
 	min-height: 100px;
 	resize: vertical;
+}
+
+#webBackButton {
+	position: sticky;
+	top: 2.5px;
+	display: none;
+	margin-bottom: -32.5px;
 }
 
 @keyframes growSizeLeft {
