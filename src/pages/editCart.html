@@ -27,7 +27,7 @@
         </div>
     </form>
     <hr>
-    <a type="submit" id="saveButton" class="normal rounded full medium" onclick="save();" data-page="home"><img
+    <a type="submit" id="saveButton" class="normal rounded full medium" onclick="save();"><img
             src="/assets/icons/save.png">Save
         changes</a>
     <a class="normal rounded full small" onclick="cancel();"><img src="/assets/icons/close.png">Cancel</a>
@@ -76,6 +76,8 @@
 
         saveData();
         session.newCart = false;
+
+        navigateBack();
     }
 
     function cancel() {
