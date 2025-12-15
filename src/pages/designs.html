@@ -1,0 +1,155 @@
+<style>
+    #designs {
+        margin: 10px 0px;
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .design {
+        width: min-content;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        background: var(--color-content-background-primary);
+        border-radius: 10px;
+        border: 2.5px solid var(--color-button-hover-background);
+        transition: border-color .25s, background .25s;
+    }
+
+    .design:hover {
+        background: var(--color-content-background-secondary);
+        border-color: var(--color-button-background);
+    }
+
+    .looks {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .cover {
+        justify-self: left;
+        width: 96px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .cover img {
+        border-radius: 10px;
+        margin: 0px;
+    }
+
+    .cart {
+        border: 2.5px solid #333333;
+        border-radius: 10px;
+        box-sizing: border-box;
+        background: #1a1a1a;
+        width: 96px;
+        height: 213.333px;
+    }
+
+    .cart .cartRow {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        border-bottom: 5px solid #333333;
+    }
+
+    .cart .cartRow:last-child {
+        border-bottom: none;
+    }
+
+    .cart .cartRow img {
+        width: 40%;
+        max-height: 47.34px;
+    }
+
+    .title {
+        text-align: center;
+        padding: 10px;
+    }
+</style>
+
+<body>
+    <h2 class="center"><img src="/assets/icons/cart.png">DESIGNS</h2>
+    <p class="center">Choose a cart to view more information.</p>
+    <hr>
+    <a class="normal rounded full medium" data-page="editDesign" onclick="addDesign()"><img
+            src="/assets/icons/add.png">Create new design</a>
+    <hr>
+
+    <div id="designs">
+    </div>
+
+    <hr>
+    <a class="normal rounded full medium" data-page="publicationsLibrary"><img src="/assets/icons/shelf.png">Manage
+        publications library</a>
+    <a class="normal rounded full medium" data-page="publicationsLibrary"><img src="/assets/icons/cover.png">Manage
+        covers</a>
+</body>
+<script>
+    function initDesigns() {
+        const designs = document.getElementById("designs");
+
+        designs.innerHTML = "";
+
+        if (Object.keys(data.designs).length == 0) {
+            designs.innerHTML = "<p class='center'>You don't have any designs yet.</p>";
+        } else {
+            let output = "";
+
+            for (const designID in data.designs) {
+                const design = data.designs[designID];
+
+                output += `
+                    <div class="design" onclick='openDesign("` + designID + `")'>
+                        <div class="looks">
+                            <div class="cover">
+                                <img src="/assets/cartCovers/` + data.covers[design.coverID].fileName + `">
+                            </div>
+                            <div class="cart">
+                `
+
+                output += generateCartContentHTML(design.publications);
+
+                output += `
+                            </div>
+                        </div>
+                        <div class="title">` + design.name + `</div>
+                    </div>
+                `
+            }
+
+            designs.innerHTML = output;
+        }
+    }
+
+    initDesigns();
+
+    function openDesign(designID) {
+        session.currentDesignIndex = designID;
+
+        loadPage("editDesign");
+    }
+
+    function addDesign() {
+        const newDesign = { ...defaultData.design };
+
+        data.designs[Object.keys(data.designs).length] = newDesign;
+        session.currentCartIndex = Object.keys(data.designs).length - 1;
+        session.newDesign = true;
+
+        openDesign(Object.keys(data.designs).length - 1);
+    }
+
+</script>
