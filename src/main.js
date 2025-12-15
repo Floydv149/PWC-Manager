@@ -8,6 +8,40 @@ import {
 } from "./scripts/modalRenderer.js";
 import { fullScreen, closeFullScreen } from "./scripts/fullScreen.js";
 
+//Capacitor plugin settings
+document.addEventListener("DOMContentLoaded", () => {
+	//In native app?
+	if (window.Capacitor) {
+		const { App } = Capacitor.Plugins;
+
+		//Assign app navigation to back button
+		App.addListener("backButton", () => {
+			navigateBack();
+		});
+	} else {
+		window.history.pushState(
+			{ page: 1 },
+			"Web Back Handler",
+			window.location.href
+		);
+
+		window.addEventListener("popstate", () => {
+			console.log("Browser Back Button gedetecteerd (Web Mode)");
+			navigateBack();
+
+			setTimeout(() => {
+				window.history.pushState(
+					{ page: 1 },
+					"Web Back Handler",
+					window.location.href
+				);
+			}, 0);
+		});
+
+		document.getElementById("webBackButton").style.display = "block";
+	}
+});
+
 window.generateCartContentHTML = generateCartContentHTML;
 window.openModal = openModal;
 window.openAlertModal = openAlertModal;
@@ -146,8 +180,44 @@ window.data = {
 			fileName: "JWORG.png",
 		},
 		1: {
-			name: "Welkom",
-			fileName: "iedereenIsWelkom.png",
+			name: "A better world is near",
+			fileName: "aBetterWorldIsNear.png",
+		},
+		2: {
+			name: "An end to war - how?",
+			fileName: "anEndToWarHow.png",
+		},
+		3: {
+			name: "Everyone is welcome",
+			fileName: "everyoneIsWelcome.png",
+		},
+		4: {
+			name: "Find relief from stress",
+			fileName: "findReliefFromStress.png",
+		},
+		5: {
+			name: "Free bible course",
+			fileName: "freeBibleCourse.png",
+		},
+		6: {
+			name: "Free online bible course",
+			fileName: "freeOnlineBibleCourse.png",
+		},
+		7: {
+			name: "How did life originate?",
+			fileName: "howDidLifeOriginate.png",
+		},
+		8: {
+			name: "Mental health",
+			fileName: "mentalHealth.png",
+		},
+		9: {
+			name: "Questions about suffering answered",
+			fileName: "questionsAboutSufferingAnswered.png",
+		},
+		10: {
+			name: "What has happened to respect?",
+			fileName: "whatHasHappenedToRespect.png",
 		},
 	},
 };
@@ -159,7 +229,7 @@ window.session = {
 	currentCartIndex: 1,
 	newCart: false,
 	isRealisticView: false,
-	currentPage: "",
+	currentPage: "home",
 	pageHistory: [],
 };
 
@@ -174,14 +244,19 @@ async function loadPage(pageName, saveHistory = true) {
 			const html = await response.text();
 
 			if (saveHistory) {
-				session.pageHistory.push(session.currentPage);
-				session.currentPage = pageName;
+				if (session.currentPage !== pageName) {
+					session.pageHistory.push(session.currentPage);
+				}
 			}
+			session.currentPage = pageName;
+
 			loadPageContent(html, pageName);
+			console.log(session.pageHistory);
 		}, 0);
 	} catch (err) {
 		// app.innerHTML = `<p>Error loading page: ${err.message}</p>`;
 		alert("Something went wrong with this button.");
+		loadPage("home");
 	}
 }
 
@@ -259,4 +334,4 @@ function saveData() {
 
 loadData();
 session.currentCartIndex = 1;
-loadPage("cartDetails");
+loadPage("home");
