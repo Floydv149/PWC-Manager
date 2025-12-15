@@ -75,7 +75,7 @@ export async function openAlertModal(
 	alertHeaderIcon,
 	alertHeaderText,
 	alertHTML,
-	buttonText
+	buttonText = "OK"
 ) {
 	session.currentModalAnswer = -1;
 
