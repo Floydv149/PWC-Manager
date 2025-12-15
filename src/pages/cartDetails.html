@@ -353,7 +353,6 @@
 </style>
 
 <body>
-    <a class="normal rounded full small" data-page="home"><img src="/assets/icons/back.png">Back</a>
     <h2 class="center" id="header"><img src="/assets/icons/cart.png">Cart</h2>
     <div id="cartAppearance">
         <img onclick="fullScreen(this)" src="/assets/cartCovers/JWORG.png" id="cartCover">
@@ -389,8 +388,7 @@
         </div>
         <div class="widget" onclick="editComments(this);">
             <h3 class="center"><img src="/assets/icons/note.png" onclick="editComments()">Comments</h3>
-            <p id="comments"></p>
-            <p><img src=' /assets/icons/pen.png'></p>
+            <p id="comments">
         </div>
         <div class="widget full">
             <h3 class="center" id="supplies"><img src="/assets/icons/shelf.png">Supplies</h3>
@@ -445,12 +443,12 @@
         document.getElementById("number").innerHTML = "<img src='/assets/icons/hashtag.png'>Number:<br>" + cart.number;
 
         document.getElementById("status").innerHTML = "<h4 class='center'><img src='/assets/icons/" + defaultData.statusses[cart.statusID].image + ".png'>" + defaultData.statusses[cart.statusID].name + " <img src='/assets/icons/pen.png'></h4>";
-        document.getElementById("lastMaintenance").innerHTML = "<img src='/assets/icons/clean.png'>Last maintenance:<br>" + cart.lastCleaned + "<br><img src='/assets/icons/pen.png'>";
+        document.getElementById("lastMaintenance").innerHTML = "<img src='/assets/icons/clean.png'>Last maintenance:<br>" + cart.lastCleaned + " <img src='/assets/icons/pen.png'>";
 
         if (cart.comments == "") {
-            document.getElementById("comments").innerHTML = "No comments.";
+            document.getElementById("comments").innerHTML = "No comments <img src='/assets/icons/add.png'>";
         } else {
-            document.getElementById("comments").innerHTML = cart.comments;
+            document.getElementById("comments").innerHTML = cart.comments + " <img src='/assets/icons/pen.png'>";
         }
 
         const cartSupplies = document.getElementById("cartSupplies");
@@ -579,7 +577,7 @@
             if (result) {
                 delete data.carts[session.currentCartIndex];
                 openAlertModal("checkBox", "CART DELETED", "<p class='center'>The cart has been deleted successfully.</p>", "Okay").then(() => {
-                    loadPage("home");
+                    navigateBack();
                 });
             }
         });
