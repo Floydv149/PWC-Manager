@@ -26,7 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
 		);
 
 		window.addEventListener("popstate", () => {
-			console.log("Browser Back Button gedetecteerd (Web Mode)");
 			navigateBack();
 
 			setTimeout(() => {
@@ -88,6 +87,16 @@ window.defaultData = {
 			image: "close",
 		},
 	},
+	design: {
+		name: "Untitled",
+		creationDate: "0000-00-00",
+		coverID: 0,
+		publications: [
+			[0, 0],
+			[0, 0],
+			[0, 0],
+		],
+	},
 };
 window.data = {
 	carts: {
@@ -117,7 +126,7 @@ window.data = {
 				0: 3,
 			},
 			type: 0,
-			designID: 0,
+			designID: 1,
 			comments: "",
 		},
 	},
@@ -127,9 +136,9 @@ window.data = {
 			creationDate: "0000-00-00",
 			coverID: 0,
 			publications: [
-				[0, 0],
 				[1, 1],
 				[2, 2],
+				[3, 3],
 			],
 		},
 		1: {
@@ -139,7 +148,7 @@ window.data = {
 			publications: [
 				[2, 2],
 				[1, 1],
-				[0, 0],
+				[3, 3],
 			],
 		},
 	},
@@ -159,16 +168,20 @@ window.data = {
 			imageURL: "/assets/icons/unknownLanguage.png",
 		},
 		0: {
+			title: "Unknown",
+			imageURL: "/assets/icons/unknownPublication.png",
+		},
+		1: {
 			title: "Coping with rising prices",
 			imageURL:
 				"https://cms-imgp.jw-cdn.org/img/p/g/202511/E/pt/g_E_202511_lg.jpg",
 		},
-		1: {
+		2: {
 			title: "What has happened to respect?",
 			imageURL:
 				"https://cms-imgp.jw-cdn.org/img/p/g/202411/E/pt/g_E_202411_lg.jpg",
 		},
-		2: {
+		3: {
 			title: "Can our planet survive?",
 			imageURL:
 				"https://cms-imgp.jw-cdn.org/img/p/g/202311/E/pt/g_E_202311_lg.jpg",
@@ -227,6 +240,7 @@ window.saveData = saveData;
 window.session = {
 	currentModalAnswer: -1,
 	currentCartIndex: 1,
+	currentDesignIndex: 0,
 	newCart: false,
 	isRealisticView: false,
 	currentPage: "home",
@@ -251,7 +265,6 @@ async function loadPage(pageName, saveHistory = true) {
 			session.currentPage = pageName;
 
 			loadPageContent(html, pageName);
-			console.log(session.pageHistory);
 		}, 0);
 	} catch (err) {
 		// app.innerHTML = `<p>Error loading page: ${err.message}</p>`;
@@ -329,9 +342,7 @@ function loadData() {
 
 function saveData() {
 	localStorage.setItem("data", JSON.stringify(data));
-	console.log("Data saved.");
 }
 
 loadData();
-session.currentCartIndex = 1;
-loadPage("home");
+loadPage("designs");
