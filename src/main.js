@@ -49,6 +49,7 @@ window.closeLastModal = closeLastModal;
 window.fullScreen = fullScreen;
 window.closeFullScreen = closeFullScreen;
 window.loadPage = loadPage;
+window.reloadPage = reloadPage;
 window.navigateBack = navigateBack;
 
 const app = document.getElementById("app");
@@ -162,29 +163,50 @@ window.data = {
 			address: "Koninkrijkszaal",
 		},
 	},
-	catalog: {
+	library: {
 		X: {
 			title: "Other languages",
 			imageURL: "/assets/icons/unknownLanguage.png",
+			categoryID: 0,
+			date: "0000-00-00",
 		},
 		0: {
 			title: "Unknown",
 			imageURL: "/assets/icons/unknownPublication.png",
+			categoryID: 0,
+			date: "0000-00-00",
 		},
 		1: {
 			title: "Coping with rising prices",
 			imageURL:
 				"https://cms-imgp.jw-cdn.org/img/p/g/202511/E/pt/g_E_202511_lg.jpg",
+			categoryID: 1,
+			date: "0000-00-00",
 		},
 		2: {
 			title: "What has happened to respect?",
 			imageURL:
 				"https://cms-imgp.jw-cdn.org/img/p/g/202411/E/pt/g_E_202411_lg.jpg",
+			categoryID: 1,
+			date: "0000-00-00",
 		},
 		3: {
 			title: "Can our planet survive?",
 			imageURL:
 				"https://cms-imgp.jw-cdn.org/img/p/g/202311/E/pt/g_E_202311_lg.jpg",
+			categoryID: 1,
+			date: "0000-00-00",
+		},
+	},
+	categories: {
+		0: {
+			name: "Other",
+		},
+		1: {
+			name: "Awake!",
+		},
+		2: {
+			name: "Watchtower",
 		},
 	},
 	covers: {
@@ -245,9 +267,14 @@ window.session = {
 	isRealisticView: false,
 	currentPage: "home",
 	pageHistory: [],
+	selectedElement: null,
 };
 
-async function loadPage(pageName, saveHistory = true) {
+async function loadPage(
+	pageName,
+	saveHistory = true,
+	keepScrollPosition = false
+) {
 	try {
 		setTimeout(async () => {
 			app.style.opacity = 0;
@@ -264,7 +291,7 @@ async function loadPage(pageName, saveHistory = true) {
 			}
 			session.currentPage = pageName;
 
-			loadPageContent(html, pageName);
+			loadPageContent(html, pageName, keepScrollPosition);
 		}, 0);
 	} catch (err) {
 		// app.innerHTML = `<p>Error loading page: ${err.message}</p>`;
@@ -273,7 +300,11 @@ async function loadPage(pageName, saveHistory = true) {
 	}
 }
 
-function loadPageContent(html, pageName) {
+function reloadPage() {
+	loadPage(session.currentPage, false, true);
+}
+
+function loadPageContent(html, pageName, keepScrollPosition = false) {
 	setTimeout(() => {
 		app.innerHTML = html;
 
@@ -296,10 +327,13 @@ function loadPageContent(html, pageName) {
 		});
 
 		addButtonRedirects();
-		window.scrollTo({
-			top: 0,
-			behavior: "instant",
-		});
+
+		if (!keepScrollPosition) {
+			window.scrollTo({
+				top: 0,
+				behavior: "instant",
+			});
+		}
 
 		setTimeout(() => {
 			app.style.opacity = 1;
