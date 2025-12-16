@@ -460,7 +460,7 @@
             let cartSuppliesContent = "<div class='split'>";
 
             for (const publicationID in cart.supplies) {
-                const publication = data.catalog[publicationID];
+                const publication = data.library[publicationID];
 
                 cartSuppliesContent += `
                 <div class="publication">
@@ -505,7 +505,7 @@
                 if (result) {
                     delete data.carts[session.currentCartIndex].supplies[publicationID];
                     saveData();
-                    initCart();
+                    reloadPage();
                 }
             });
         }
@@ -548,7 +548,7 @@
                     </div>
                     <div class="cart">`;
 
-                modalContent += generateCartContentHTML(design.publications);
+                modalContent += generateCartContentHTML(design.publications, false);
 
                 modalContent += `</div>
                 </div>
@@ -567,7 +567,7 @@
         data.carts[session.currentCartIndex].designID = designID;
 
         saveData();
-        initCart();
+        reloadPage();
 
         closeLastModal();
     }
@@ -618,7 +618,7 @@
 
         saveData();
         closeLastModal();
-        initCart();
+        reloadPage();
     }
 
     function editLastMaintenance() {
@@ -650,7 +650,7 @@
         data.carts[session.currentCartIndex].lastCleaned = form.lastMaintenance.value;
 
         saveData();
-        initCart();
+        reloadPage();
 
         closeLastModal();
     }
@@ -677,7 +677,7 @@
         data.carts[session.currentCartIndex].comments = form.comments.value;
 
         saveData();
-        initCart();
+        reloadPage();
 
         closeLastModal();
     }
@@ -694,7 +694,7 @@
 
                 data.carts[session.currentCartIndex].supplies = newSupplies;
                 saveData();
-                initCart();
+                reloadPage();
             }
         });
     }

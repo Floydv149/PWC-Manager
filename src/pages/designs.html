@@ -92,8 +92,8 @@
     </div>
 
     <hr>
-    <a class="normal rounded full medium" data-page="publicationsLibrary"><img src="/assets/icons/shelf.png">Manage
-        publications library</a>
+    <a class="normal rounded full medium" data-page="library"><img src="/assets/icons/shelf.png">Manage
+        library</a>
 </body>
 <script>
     function initDesigns() {
@@ -118,7 +118,7 @@
                             <div class="cart">
                 `
 
-                output += generateCartContentHTML(design.publications);
+                output += generateCartContentHTML(design.publications, false);
 
                 output += `
                             </div>
@@ -146,6 +146,8 @@
         data.designs[Object.keys(data.designs).length] = newDesign;
         session.currentCartIndex = Object.keys(data.designs).length - 1;
         session.newDesign = true;
+
+        saveData();
 
         openDesign(Object.keys(data.designs).length - 1);
     }
