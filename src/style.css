@@ -751,6 +751,7 @@ img.fullScreenImagePortrait {
 
 .fullScreenCloseButton {
 	right: 10px;
+	top: 25px !important;
 }
 
 .fullScreenDownloadButton {
@@ -1208,6 +1209,7 @@ input:checked + .slider:before {
 	top: 2.5px;
 	display: none;
 	margin-bottom: -32.5px;
+	z-index: 1000;
 }
 
 @keyframes growSizeLeft {
