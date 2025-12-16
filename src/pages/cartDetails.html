@@ -361,9 +361,10 @@
     <hr>
     <a class="normal rounded full medium" onclick="toggleRealisticView()" id='realisticViewToggle'><img
             src="/assets/icons/eye.png">Change view</a>
+    <a class="normal rounded full medium" onclick="editCurrentDesign()"><img src="/assets/icons/pen.png">Edit current
+        design</a>
     <a class="normal rounded full medium" onclick="openDesignChooser()"><img src="/assets/icons/list.png">Choose
         design</a>
-    <a class="normal rounded full medium"><img src="/assets/icons/pen.png">Edit current design</a>
     <hr>
     <div id="widgets">
         <div class="widget">
@@ -697,5 +698,10 @@
                 reloadPage();
             }
         });
+    }
+
+    function editCurrentDesign() {
+        session.currentDesignIndex = session.currentCartIndex;
+        loadPage("editDesign");
     }
 </script>
