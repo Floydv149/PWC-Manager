@@ -63,9 +63,10 @@
 
     </div>
     <hr>
-    <a class='normal rounded full medium' data-page='editCart' onclick="addCart()"><img src='/assets/icons/add.png'>Add
+    <a class='normal rounded full medium' onclick="addCart()"><img src='/assets/icons/add.png'>Add
         new cart</a>
     <a class='normal rounded full medium' data-page='designs'><img src='/assets/icons/list.png'>Manage designs</a>
+    <a class='normal rounded full medium' data-page='library'><img src='/assets/icons/shelf.png'>Manage library</a>
     <a class='normal rounded full medium' data-page='editLocations'><img src='/assets/icons/pen.png'>Edit locations</a>
     <a class='normal rounded full medium' data-page='settings'><img src='/assets/icons/settings.png'>Settings</a>
 </body>
@@ -103,12 +104,16 @@
     initCarts();
 
     function addCart() {
-        const newCart = { ...defaultData.cart };
-        newCart.number = Object.keys(data.carts).length + 1;
+        const availableIndex = getAvailableIndex(data.carts);
 
-        data.carts[Object.keys(data.carts).length] = newCart;
-        session.currentCartIndex = Object.keys(data.carts).length - 1;
+        const newCart = { ...defaultData.cart };
+        newCart.number = availableIndex + 1;
+
+        data.carts[availableIndex] = newCart;
+        session.currentCartIndex = availableIndex;
         session.newCart = true;
+
+        loadPage("editCart");
     }
 
 </script>
