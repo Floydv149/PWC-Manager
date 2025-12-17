@@ -81,7 +81,7 @@
 </style>
 
 <body>
-    <h2 class="center"><img src="/assets/icons/cart.png">DESIGNS</h2>
+    <h2 class="center"><img src="/assets/icons/list.png">DESIGNS</h2>
     <p class="center">Choose a cart to view more information.</p>
     <hr>
     <a class="normal rounded full medium" onclick="addDesign()"><img src="/assets/icons/add.png">Create new design</a>
@@ -140,15 +140,16 @@
     }
 
     function addDesign() {
+        const availableIndex = getAvailableIndex(data.designs);
+
         const newDesign = { ...defaultData.design };
 
-        data.designs[Object.keys(data.designs).length] = newDesign;
-        session.currentCartIndex = Object.keys(data.designs).length - 1;
+        data.designs[availableIndex] = newDesign;
         session.newDesign = true;
 
         saveData();
 
-        openDesign(Object.keys(data.designs).length - 1);
+        openDesign(availableIndex);
     }
 
 </script>
