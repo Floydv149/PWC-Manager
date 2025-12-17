@@ -542,7 +542,7 @@
             for (const designID in data.designs) {
                 const design = data.designs[designID];
 
-                modalContent += `<div class="design" onclick="setCartDesign('` + designID + `')">
+                modalContent += `<div class="design" onclick="setCartDesign(` + designID + `)">
                 <div class="looks">
                     <div class="cover">
                         <img src="/assets/cartCovers/`+ data.covers[design.coverID].fileName + `">
@@ -610,7 +610,7 @@
 
         modalContent += `</div>
         <hr>
-        <a type="submit" class="normal rounded full medium" onclick="saveStatus()"><img src="/assets/icons/save.png">Save changes</a>
+        <a class="normal rounded full medium" onclick="saveStatus()"><img src="/assets/icons/save.png">Save changes</a>
         <a class="normal rounded full medium" onclick="closeLastModal();"><img src="/assets/icons/close.png">Cancel</a>`;
 
         openModal(modalContent);
@@ -637,7 +637,7 @@
             </form>
             <a class="normal rounded small full" onclick="setMaintenanceToday()"><img src="/assets/icons/calendar.png">Set to today</a>
             <hr>
-            <a type="submit" class="normal rounded full medium" onclick="saveLastMaintenance()"><img src="/assets/icons/save.png">Save changes</a>
+            <a class="normal rounded full medium" onclick="saveLastMaintenance()"><img src="/assets/icons/save.png">Save changes</a>
             <a class="normal rounded full medium" onclick="closeLastModal();"><img src="/assets/icons/close.png">Cancel</a>
         `);
     }
@@ -670,7 +670,7 @@
                 </div>
             </form>
             <hr>
-            <a type="submit" class="normal rounded full medium" onclick="saveComments()"><img src="/assets/icons/save.png">Save changes</a>
+            <a class="normal rounded full medium" onclick="saveComments()"><img src="/assets/icons/save.png">Save changes</a>
             <a class="normal rounded full medium" onclick="closeLastModal();"><img src="/assets/icons/close.png">Cancel</a>
         `);
     }
@@ -704,7 +704,7 @@
     }
 
     function editCurrentDesign() {
-        session.currentDesignIndex = session.currentCartIndex;
+        session.currentDesignIndex = data.carts[session.currentCartIndex].designID;
         loadPage("designDetails");
     }
 </script>
