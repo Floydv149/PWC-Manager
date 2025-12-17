@@ -7,6 +7,7 @@ import {
 	closeLastModal,
 } from "./scripts/modalRenderer.js";
 import { fullScreen, closeFullScreen } from "./scripts/fullScreen.js";
+import { getAvailableIndex } from "./scripts/findAvailableIndex.js";
 
 //Capacitor plugin settings
 document.addEventListener("DOMContentLoaded", () => {
@@ -51,6 +52,7 @@ window.closeFullScreen = closeFullScreen;
 window.loadPage = loadPage;
 window.reloadPage = reloadPage;
 window.navigateBack = navigateBack;
+window.getAvailableIndex = getAvailableIndex;
 
 const app = document.getElementById("app");
 window.defaultData = {
@@ -207,12 +209,15 @@ window.data = {
 	categories: {
 		0: {
 			name: "Other",
+			jworgCode: "",
 		},
 		1: {
 			name: "Awake!",
+			jworgCode: "g",
 		},
 		2: {
 			name: "Watchtower",
+			jworgCode: "wp",
 		},
 	},
 	covers: {
@@ -276,6 +281,7 @@ window.session = {
 	currentPage: "home",
 	pageHistory: [],
 	selectedElement: null,
+	navigateBackCancelFunction: null,
 };
 
 async function loadPage(
@@ -283,6 +289,8 @@ async function loadPage(
 	saveHistory = true,
 	keepScrollPosition = false
 ) {
+	session.navigateBackCancelFunction = null;
+
 	try {
 		setTimeout(async () => {
 			app.style.opacity = 0;
@@ -350,6 +358,11 @@ function loadPageContent(html, pageName, keepScrollPosition = false) {
 }
 
 function navigateBack() {
+	if (session.navigateBackCancelFunction != null) {
+		session.navigateBackCancelFunction();
+		session.navigateBackCancelFunction = null;
+	}
+
 	if (
 		session.pageHistory.length > 0 &&
 		session.pageHistory[session.pageHistory.length - 1] != ""
