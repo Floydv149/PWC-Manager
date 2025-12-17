@@ -577,6 +577,9 @@
         openYesNoModal("trash", "DELETE CART", "<p class='center'>Are you sure you want to delete this cart?<br>All it's data will be lost.</p><p class='center'>This action cannot be undone.</p>", "Yes", "No").then((result) => {
             if (result) {
                 delete data.carts[session.currentCartIndex];
+
+                saveData();
+
                 openAlertModal("checkBox", "CART DELETED", "<p class='center'>The cart has been deleted successfully.</p>", "Okay").then(() => {
                     navigateBack();
                 });
@@ -702,6 +705,6 @@
 
     function editCurrentDesign() {
         session.currentDesignIndex = session.currentCartIndex;
-        loadPage("editDesign");
+        loadPage("designDetails");
     }
 </script>
