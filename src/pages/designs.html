@@ -84,8 +84,7 @@
     <h2 class="center"><img src="/assets/icons/cart.png">DESIGNS</h2>
     <p class="center">Choose a cart to view more information.</p>
     <hr>
-    <a class="normal rounded full medium" data-page="editDesign" onclick="addDesign()"><img
-            src="/assets/icons/add.png">Create new design</a>
+    <a class="normal rounded full medium" onclick="addDesign()"><img src="/assets/icons/add.png">Create new design</a>
     <hr>
 
     <div id="designs">
@@ -137,7 +136,7 @@
     function openDesign(designID) {
         session.currentDesignIndex = designID;
 
-        loadPage("editDesign");
+        loadPage("designDetails");
     }
 
     function addDesign() {
