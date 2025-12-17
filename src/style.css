@@ -335,6 +335,9 @@ fieldset {
 form {
 	font-weight: bold;
 }
+form p {
+	font-weight: normal;
+}
 form table {
 	width: 100%;
 }
