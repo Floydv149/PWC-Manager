@@ -98,6 +98,12 @@ window.defaultData = {
 			[0, 0],
 		],
 	},
+	publication: {
+		title: "Untitled",
+		imageURL: "/assets/icons/unknownPublication.png",
+		categoryID: 0,
+		date: "0000-00-00",
+	},
 };
 window.data = {
 	carts: {
@@ -261,9 +267,11 @@ window.saveData = saveData;
 
 window.session = {
 	currentModalAnswer: -1,
-	currentCartIndex: 1,
+	currentCartIndex: 0,
 	currentDesignIndex: 0,
+	currentPublicationIndex: 0,
 	newCart: false,
+	newPublication: false,
 	isRealisticView: false,
 	currentPage: "home",
 	pageHistory: [],
@@ -379,4 +387,4 @@ function saveData() {
 }
 
 loadData();
-loadPage("designs");
+loadPage("library");
