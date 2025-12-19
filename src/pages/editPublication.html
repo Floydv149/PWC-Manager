@@ -111,8 +111,17 @@
     }
 
     async function processCode() {
+        if (!navigator.onLine) {
+            openAlertModal("offline", "OFFLINE", "<p class='center'>You are currently offline, and you cannot add a publication through a code when offline. Please check your internet connection and try again.</p>");
+
+            return;
+        }
+
         const form = document.getElementById('editPublicationForm'); const publicationIndex = session.currentPublicationIndex;
         const publication = data.library[publicationIndex];
+        if (form.code == "") {
+            return;
+        }
 
         document.getElementById('imagePreview').src = "/assets/icons/loading.gif";
         form.category.value = 0;
