@@ -144,6 +144,8 @@
 
         const newDesign = { ...defaultData.design };
 
+        newDesign.creationDate = new Date().toISOString().split('T')[0];
+
         data.designs[availableIndex] = newDesign;
         session.newDesign = true;
 
