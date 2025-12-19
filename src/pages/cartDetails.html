@@ -318,6 +318,60 @@
         transition: min-width .25s, max-width .25s;
     }
 
+    #library {
+        min-width: 300px;
+        width: calc(100% - 10px);
+        background: var(--color-content-background-primary);
+        max-height: 60vh;
+        align-self: flex-start;
+        overflow-y: scroll;
+        border: 5px solid var(--color-button-background);
+        border-radius: 10px;
+        overflow-x: hidden;
+        box-sizing: border-box;
+        margin: 5px;
+    }
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    #library::-webkit-scrollbar,
+    .publicationRow::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    #library,
+    .publicationRow {
+        -ms-overflow-style: none;
+        /* IE and Edge */
+        scrollbar-width: none;
+        /* Firefox */
+    }
+
+    #library .publicationRow {
+        width: 100%;
+        overflow-x: scroll;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: left;
+        gap: 5px;
+        padding: 0px 10px;
+        box-sizing: border-box;
+    }
+
+    #library .publication {
+        max-width: 94.29px;
+        min-width: 94.29px;
+    }
+
+    #library .publication.unselectable {
+        opacity: 0.5
+    }
+
+    #library .publication img {
+        border-radius: 2.5px;
+    }
+
     @media only screen and (max-width: 650px) {
         .widget .split .publication {
             width: 100%;
@@ -398,7 +452,8 @@
 
             <hr>
 
-            <a class='normal rounded full small' onclick='addSupplies();'><img src='/assets/icons/add.png'>Add
+            <a class='normal rounded full small' onclick='addSuppliesPublication();'><img
+                    src='/assets/icons/add.png'>Add
                 supplies</a>
             <a class='normal rounded full small' onclick='resetSupplies();'><img src='/assets/icons/trash.png'>Reset
                 supplies</a>
@@ -692,8 +747,12 @@
                 const newSupplies = {};
                 const designPublications = data.designs[data.carts[session.currentCartIndex].designID].publications;
 
-                for (const publicationID in designPublications) {
-                    newSupplies[publicationID] = 0;
+                console.log(designPublications);
+
+                for (let i = 0; i < designPublications.length; i++) {
+                    for (let j = 0; j < designPublications[i].length; j++) {
+                        newSupplies[designPublications[i][j]] = 0;
+                    }
                 }
 
                 data.carts[session.currentCartIndex].supplies = newSupplies;
@@ -707,4 +766,87 @@
         session.currentDesignIndex = data.carts[session.currentCartIndex].designID;
         loadPage("designDetails");
     }
+
+    function addSuppliesPublication() {
+        let lastCategory = -1;
+
+        output = "<div id='library'>";
+
+        const sortedEntries = Object.entries(data.library);
+
+        const sortedLibrary = sortedEntries.sort(([keyA, itemA], [keyB, itemB]) => {
+            // --- Primary Sort: categoryID (Ascending) ---
+            if (itemA.categoryID !== itemB.categoryID) {
+                return itemA.categoryID - itemB.categoryID;
+            }
+
+            // --- Secondary Sort: date (Descending - Newest First) ---
+            // Compare itemA.date (the value part) and itemB.date
+            if (itemA.date > itemB.date) {
+                return -1; // 'a' is newer, so it comes first
+            }
+            if (itemA.date < itemB.date) {
+                return 1; // 'b' is newer, so it comes first
+            }
+
+            // Fallback: If categoryID and date are equal, maintain original order
+            return 0;
+        });
+
+        for (let i = 0; i < sortedLibrary.length; i++) {
+            const publicationID = sortedLibrary[i][0];
+            const publication = data.library[publicationID];
+
+            if (publicationID != 0) {
+                if (lastCategory != publication.categoryID) {
+                    if (lastCategory != -1) {
+                        output += `</div>`;
+                    }
+                    output += `<h4>` + data.categories[publication.categoryID].name + `</h4>`;
+                    lastCategory = publication.categoryID;
+                    output += `<div class="publicationRow">`;
+                }
+
+                if (publicationID in data.carts[session.currentCartIndex].supplies) {
+                    output += `
+            <div class="publication unselectable">
+                <img src="${publication.imageURL}">
+            </div>
+            `;
+                } else {
+                    output += `
+            <div class="publication" onclick="addPublicationToSupplies('${publicationID}')">
+                <img src="${publication.imageURL}">
+            </div>
+            `;
+                }
+            }
+        }
+
+        output += `</div><hr>
+        <a class="normal rounded full small" onclick="openLibrary()"><img src="/assets/icons/shelf.png">Manage
+                library</a>
+        </div>`;
+
+        openModal(`
+            <h2 class="center"><img src="/assets/icons/add.png">ADD SUPPLIES</h2>
+            <p class="center">Add a publication to the supplies of this cart.</p>
+            <hr>
+            ${output}
+            <a class="normal rounded full medium" onclick="closeLastModal();"><img src="/assets/icons/close.png">Cancel</a>
+        `)
+    }
+
+    function openLibrary() {
+        loadPage("library");
+        closeLastModal();
+    }
+
+    function addPublicationToSupplies(publicationID) {
+        data.carts[session.currentCartIndex].supplies[publicationID] = 0;
+        saveData();
+        closeLastModal();
+        reloadPage();
+    }
+
 </script>
