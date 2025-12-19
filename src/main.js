@@ -400,4 +400,4 @@ function saveData() {
 }
 
 loadData();
-loadPage("library");
+loadPage("home");
