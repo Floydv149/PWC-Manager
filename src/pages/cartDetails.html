@@ -42,6 +42,7 @@
     #cartContents .cartRow img {
         width: 46% !important;
         max-height: 82.84px !important;
+        object-fit: contain;
     }
 
     #cartDetails {}
@@ -129,6 +130,7 @@
     .cart .cartRow img {
         width: 40%;
         max-height: 47.34px;
+        object-fit: contain;
     }
 
     .title {
@@ -485,7 +487,7 @@
 
         document.getElementById('header').innerHTML = "<img src='/assets/icons/cart.png'>" + cart.name;
 
-        document.getElementById("cartCover").src = "/assets/cartCovers/" + data.covers[data.designs[cart.designID].coverID].fileName;
+        document.getElementById("cartCover").src = "/assets/cartCovers/" + globals.covers[data.designs[cart.designID].coverID].fileName;
         cartContents.innerHTML = generateCartContentHTML(data.designs[cart.designID].publications);
 
         document.getElementById("storageLocation").innerHTML = "<img src='/assets/icons/garage.png'>Storage location<br><br>" + location
@@ -494,7 +496,11 @@
             document.getElementById("storageLocation").innerHTML += "<a class='normal rounded full small' target='_blank' href='https://www.google.com/maps/place/" + address + "''><img src='/assets/icons/googleMaps.png'>" + address + "</a>";
         }
 
-        document.getElementById("responsible").innerHTML = "<img src='/assets/icons/person.png'>Responsible:<br>" + cart.responsible;
+        if (cart.responsible == "") {
+            document.getElementById("responsible").innerHTML = "<img src='/assets/icons/person.png'>No responsible";
+        } else {
+            document.getElementById("responsible").innerHTML = "<img src='/assets/icons/person.png'>Responsible:<br>" + cart.responsible;
+        }
         document.getElementById("design").innerHTML = "<img src='/assets/icons/rulerPen.png'>Design:<br>" + data.designs[cart.designID].name;
         document.getElementById("number").innerHTML = "<img src='/assets/icons/hashtag.png'>Number:<br>" + cart.number;
 
@@ -510,7 +516,7 @@
         const cartSupplies = document.getElementById("cartSupplies");
 
         if (Object.keys(cart.supplies).length === 0) {
-            cartSupplies.innerHTML = "<br><p class='center'>No supplies have added yet.</p>";
+            cartSupplies.innerHTML = "<br><p class='center'>No supplies have been added yet.</p>";
         } else {
 
             let cartSuppliesContent = "<div class='split'>";
@@ -600,7 +606,7 @@
                 modalContent += `<div class="design" onclick="setCartDesign(` + designID + `)">
                 <div class="looks">
                     <div class="cover">
-                        <img src="/assets/cartCovers/`+ data.covers[design.coverID].fileName + `">
+                        <img src="/assets/cartCovers/`+ globals.covers[design.coverID].fileName + `">
                     </div>
                     <div class="cart">`;
 
@@ -656,7 +662,6 @@
             <div id="statusList">`;
 
         for (const statusID in defaultData.statusses) {
-            console.log(statusID);
             modalContent += `<div class="status" onclick="setStatus('` + statusID + `')">
                 <img src="/assets/icons/`+ defaultData.statusses[statusID].image + `.png">
                 <div class="title">`+ defaultData.statusses[statusID].name + `</div>
@@ -672,7 +677,6 @@
     }
 
     function setStatus(type) {
-        console.log(type);
         data.carts[session.currentCartIndex].statusID = type;
 
         saveData();
@@ -747,11 +751,11 @@
                 const newSupplies = {};
                 const designPublications = data.designs[data.carts[session.currentCartIndex].designID].publications;
 
-                console.log(designPublications);
-
                 for (let i = 0; i < designPublications.length; i++) {
                     for (let j = 0; j < designPublications[i].length; j++) {
-                        newSupplies[designPublications[i][j]] = 0;
+                        if (designPublications[i][j] != 0) {
+                            newSupplies[designPublications[i][j]] = 0;
+                        }
                     }
                 }
 
@@ -802,7 +806,7 @@
                     if (lastCategory != -1) {
                         output += `</div>`;
                     }
-                    output += `<h4>` + data.categories[publication.categoryID].name + `</h4>`;
+                    output += `<h4>` + globals.categories[publication.categoryID].name + `</h4>`;
                     lastCategory = publication.categoryID;
                     output += `<div class="publicationRow">`;
                 }
