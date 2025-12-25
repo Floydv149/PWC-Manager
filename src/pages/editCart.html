@@ -70,6 +70,10 @@
             form.number.value = 0;
         }
 
+        if (cart.name == "") {
+            form.name.value = "Untitled";
+        }
+
         cart.number = parseInt(form.number.value);
         cart.name = form.name.value;
         cart.locationID = parseInt(form.location.value);

@@ -58,7 +58,7 @@ const app = document.getElementById("app");
 window.defaultData = {
 	cart: {
 		number: 0,
-		name: "Untitled",
+		name: "",
 		locationID: "",
 		responsible: "",
 		statusID: 0,
@@ -101,7 +101,7 @@ window.defaultData = {
 		],
 	},
 	publication: {
-		title: "Untitled",
+		title: "",
 		imageURL: "/assets/icons/unknownPublication.png",
 		categoryID: 0,
 		date: "0000-00-00",
