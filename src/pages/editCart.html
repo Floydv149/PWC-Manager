@@ -56,7 +56,7 @@
         form.location.value = cart.locationID;
         form.responsible.value = cart.responsible;
 
-        session.navigateBackCancelFunction = deleteCart();
+        session.navigateBackCancelFunction = deleteCart;
     }
 
     initForm();
@@ -77,6 +77,8 @@
 
         saveData();
         session.newCart = false;
+
+        session.navigateBackCancelFunction = null;
 
         navigateBack();
     }
