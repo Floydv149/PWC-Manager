@@ -5,7 +5,11 @@
     }
 
     #imagePreview {
-        width: 100px;
+        max-width: 94.29px !important;
+        min-width: 94.29px;
+        max-height: 128.66px !important;
+        min-height: 128.66px;
+        object-fit: contain;
         border-radius: 10px;
     }
 </style>
@@ -21,7 +25,7 @@
         </div>
         <hr>
         <div class="formGroup">
-            <p>Enter the code on the back of the publication for easy entering or enter manually below.<br><br>
+            <p>Enter the code on the back of the publication for easy entering or enter/edit manually below.<br><br>
                 <!-- <div class="formGroup"> -->
                 <label for="code">Code</label>
                 <input type="text" name="code" placeholder="Enter publication code" required onchange="processCode()">
@@ -68,8 +72,8 @@
         const publicationIndex = session.currentPublicationIndex;
         const publication = data.library[publicationIndex];
 
-        for (const categoryID in data.categories) {
-            const category = data.categories[categoryID];
+        for (const categoryID in globals.categories) {
+            const category = globals.categories[categoryID];
             const option = document.createElement('option');
             option.value = categoryID;
             option.textContent = category.name;
@@ -80,6 +84,8 @@
         form.category.value = publication.categoryID;
         form.imageURL.value = publication.imageURL;
         form.date.value = publication.data;
+
+        document.getElementById('imagePreview').src = publication.imageURL;
 
         session.navigateBackCancelFunction = deleteNewPublication;
     }
@@ -117,7 +123,8 @@
             return;
         }
 
-        const form = document.getElementById('editPublicationForm'); const publicationIndex = session.currentPublicationIndex;
+        const form = document.getElementById('editPublicationForm');
+        const publicationIndex = session.currentPublicationIndex;
         const publication = data.library[publicationIndex];
         if (form.code == "") {
             return;
@@ -129,6 +136,7 @@
         form.date.value = "0000-00-00";
 
         const code = form.code.value;
+        let found = false;
 
         try {
 
@@ -136,32 +144,14 @@
             const pubType = code.match(pubtypeRegex)[0].toLowerCase();
 
             //Category
-            for (const categoryID in data.categories) {
-                console.log(data.categories[categoryID].jworgCode);
-                if (data.categories[categoryID].jworgCode == pubType) {
+            for (const categoryID in globals.categories) {
+                if (globals.categories[categoryID].jworgCodes.includes(pubType)) {
                     form.category.value = categoryID;
-                    console.log(categoryID);
                 }
             }
 
             if (form.category.value == "") {
                 form.category.value = 0;
-            }
-
-            //Image URL part 1
-            let possibleDates = [];
-
-            //Date
-            const dateRegex = /(\d+)\.(\d+)/;
-            const year = code.match(dateRegex)[1];
-            const edition = code.match(dateRegex)[2];
-
-            if (edition == 1) {
-                possibleDates = ["01", "03", "05", "07", "09", "11"];
-            } else if (edition == 2) {
-                possibleDates = ["05", "07"];
-            } else if (edition == 3) {
-                possibleDates = ["09", "11"];
             }
 
             let languageID;
@@ -171,28 +161,83 @@
                 languageID = "E";
             }
 
-            let correctDate = "";
+            if (["g", "wp"].includes(pubType)) {
 
-            for (let i = 0; i < possibleDates.length; i++) {
-                const possibleDate = possibleDates[i];
-                const possibleURL = `https://cms-imgp.jw-cdn.org/img/p/${pubType}/20${year}${possibleDate}/${languageID}/pt/${pubType}_${languageID}_20${year}${possibleDate}_lg.jpg`
+                //Image URL part 1
+                let possibleDates = [];
 
-                const response = await fetch(possibleURL);
-                if (response.ok) {
-                    form.imageURL.value = possibleURL;
-                    document.getElementById('imagePreview').src = possibleURL;
-                    correctDate = "20" + year + "-" + possibleDate + "-01";
-                    break;
+                //Date
+                const dateRegex = /(\d+)\.(\d+)/;
+                const year = code.match(dateRegex)[1];
+                const edition = code.match(dateRegex)[2];
+
+                if (edition == 1) {
+                    possibleDates = ["01", "03", "05", "07", "09", "11"];
+                } else if (edition == 2) {
+                    possibleDates = ["05", "07"];
+                } else if (edition == 3) {
+                    possibleDates = ["09", "11"];
                 }
-            }
 
-            if (correctDate == "") {
-                document.getElementById('imagePreview').src = "/assets/icons/unknownPublication.png";
-            }
+                let correctDate = "";
 
-            form.date.value = correctDate;
+                for (let i = 0; i < possibleDates.length; i++) {
+                    const possibleDate = possibleDates[i];
+                    const possibleURL = `https://cms-imgp.jw-cdn.org/img/p/${pubType}/20${year}${possibleDate}/${languageID}/pt/${pubType}_${languageID}_20${year}${possibleDate}_lg.jpg`
+
+                    const response = await fetch(possibleURL);
+                    if (response.ok) {
+                        form.imageURL.value = possibleURL;
+                        document.getElementById('imagePreview').src = possibleURL;
+                        correctDate = "20" + year + "-" + possibleDate + "-01";
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (correctDate == "") {
+                    document.getElementById('imagePreview').src = "/assets/icons/unknownPublication.png";
+                }
+
+                form.date.value = correctDate;
+            } else if (code != "") {
+                const codeWithoutLanguageID = code.match(/(.+)-/)[1].toLowerCase();
+
+                for (const categoryID in globals.categories) {
+                    for (let i = 0; i < globals.categories[categoryID].jworgCodes.length; i++) {
+                        if (codeWithoutLanguageID.includes(globals.categories[categoryID].jworgCodes[i])) {
+                            form.category.value = categoryID;
+                            break;
+                        }
+                    }
+                }
+
+                const possibleURLs = [];
+                possibleURLs.push(`https://cms-imgp.jw-cdn.org/img/p/${codeWithoutLanguageID}/${languageID}/pt/${codeWithoutLanguageID}_${languageID}_lg.jpg`);
+                possibleURLs.push(`https://cms-imgp.jw-cdn.org/img/p/${codeWithoutLanguageID.toUpperCase()}/${languageID}/pt/${codeWithoutLanguageID.toUpperCase()}_${languageID}_lg.jpg`);
+
+                for (let i = 0; i < possibleURLs.length; i++) {
+                    const possibleURL = possibleURLs[i];
+
+                    const response = await fetch(possibleURL);
+                    if (response.ok) {
+                        form.imageURL.value = possibleURL;
+                        document.getElementById('imagePreview').src = possibleURL;
+                        found = true;
+                        break;
+                    }
+                }
+
+            }
         } catch (error) {
             console.log(error);
+        }
+
+        if (!found) {
+            form.imageURL.value = "/assets/icons/unknownPublication.png";
+            document.getElementById('imagePreview').src = "/assets/icons/unknownPublication.png";
+
+            openAlertModal("close", "FAILED", "<p class='center'>Publication entering through a code failed.<br>Please check the code entered and try again, or the publication is not (yet) supported.</p>");
         }
     }
 
@@ -202,7 +247,10 @@
 
                 //Delete publication if not new
                 if (!session.newPublication) {
+
                     //Remove every reference
+
+                    //From designs
                     for (const designID in data.designs) {
                         const design = data.designs[designID];
                         const publications = design.publications;
@@ -214,7 +262,14 @@
                                 }
                             }
                         }
+                    }
 
+                    //From supplies
+                    for (const cartID in data.carts) {
+                        const cart = data.carts[cartID];
+                        const supplies = cart.supplies;
+
+                        delete supplies[session.currentPublicationIndex];
                     }
 
                     //Remove from library
@@ -234,6 +289,8 @@
         if (session.newPublication) {
             delete data.library[session.currentPublicationIndex];
         }
+
+        session.newPublication = false;
 
         saveData();
     }
