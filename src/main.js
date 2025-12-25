@@ -206,20 +206,6 @@ window.data = {
 			date: "0000-00-00",
 		},
 	},
-	categories: {
-		0: {
-			name: "Other",
-			jworgCode: "",
-		},
-		1: {
-			name: "Awake!",
-			jworgCode: "g",
-		},
-		2: {
-			name: "Watchtower",
-			jworgCode: "wp",
-		},
-	},
 	covers: {
 		0: {
 			name: "JW.ORG",
@@ -264,6 +250,35 @@ window.data = {
 		10: {
 			name: "What has happened to respect?",
 			fileName: "whatHasHappenedToRespect.png",
+		},
+	},
+};
+
+window.globals = {
+	categories: {
+		0: {
+			name: "Other",
+			jworgCodes: [""],
+		},
+		1: {
+			name: "Awake!",
+			jworgCodes: ["g"],
+		},
+		2: {
+			name: "Watchtower",
+			jworgCodes: ["wp"],
+		},
+		3: {
+			name: "Tracts & Invitations",
+			jworgCodes: ["t", "inv", ""],
+		},
+		4: {
+			name: "Brochures",
+			jworgCodes: ["lffi"],
+		},
+		5: {
+			name: "Books",
+			jworgCodes: ["lff"],
 		},
 	},
 };
