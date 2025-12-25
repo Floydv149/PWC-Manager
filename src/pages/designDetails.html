@@ -127,6 +127,7 @@
         width: 100%;
         max-height: 164.42px;
         height: 164.42px;
+        object-fit: contain;
         transition: width .25s, height .25s, transform .25s;
     }
 
@@ -172,6 +173,8 @@
     #library .publicationRow {
         width: 100%;
         overflow-x: scroll;
+        overflow-y: hidden;
+        box-sizing: border-box;
         display: flex;
         flex-direction: row;
         align-items: center;
@@ -182,13 +185,21 @@
     }
 
     #library .publication {
-        max-width: 94.29px;
+        max-width: 94.29px !important;
         min-width: 94.29px;
+        max-height: 128.66px !important;
+        min-height: 128.66px;
         transition: transform .25s;
     }
 
     #library .publication img {
+        max-width: 94.29px !important;
+        min-width: 94.29px;
+        max-height: 128.66px !important;
+        min-height: 128.66px;
+        object-fit: contain;
         border-radius: 2.5px;
+        margin: 0px;
     }
 
     @media only screen and (max-width: 650px) {
@@ -235,7 +246,7 @@
 
         const cartContent = data.designs[session.currentDesignIndex].publications;
 
-        document.getElementById("cover").innerHTML = "<img src='/assets/cartCovers/" + data.covers[data.designs[session.currentDesignIndex].coverID].fileName + "'>";
+        document.getElementById("cover").innerHTML = "<img src='/assets/cartCovers/" + globals.covers[data.designs[session.currentDesignIndex].coverID].fileName + "'>";
 
         let output = "<div ";
 
@@ -289,7 +300,7 @@
 
             if (lastCategory != publication.categoryID) {
                 output += `</div>
-                <h4>`+ data.categories[publication.categoryID].name + `</h4>`;
+                <h4>`+ globals.categories[publication.categoryID].name + `</h4>`;
                 lastCategory = publication.categoryID;
                 output += `<div class="publicationRow">`;
             }
@@ -358,10 +369,10 @@
     function openCoverChooser() {
         let modalContent = "<h2 class='center'><img src='/assets/icons/list.png'>CHOOSE COVER</h2><p class='center'>Choose below which of the available covers you want to use for this cart.</p><hr><a class='normal rounded full medium' onclick='closeLastModal()'><img src='/assets/icons/close.png'>Cancel</a><hr>";
 
-        if (data.covers.length == 0) {
+        if (globals.covers.length == 0) {
             modalContent += "<p class='center'>There are no covers available.</p>";
         } else {
-            const sortedEntries = Object.entries(data.covers);
+            const sortedEntries = Object.entries(globals.covers);
 
             const sortedCovers = sortedEntries.sort(([keyA, itemA], [keyB, itemB]) => {
                 if (keyA == data.designs[session.currentDesignIndex].coverID) {
@@ -375,7 +386,7 @@
 
             for (let i = 0; i < sortedCovers.length; i++) {
                 const coverID = sortedCovers[i][0];
-                const cover = data.covers[coverID];
+                const cover = globals.covers[coverID];
 
                 if (coverID == data.designs[session.currentDesignIndex].coverID) {
                     modalContent += `
