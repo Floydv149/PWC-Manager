@@ -58,8 +58,8 @@ const app = document.getElementById("app");
 window.defaultData = {
 	cart: {
 		number: 0,
-		name: "",
-		locationID: 0,
+		name: "Untitled",
+		locationID: "",
 		responsible: "",
 		statusID: 0,
 		lastCleaned: "0000-00-00",
@@ -107,7 +107,57 @@ window.defaultData = {
 		date: "0000-00-00",
 	},
 };
+
 window.data = {
+	carts: {
+		0: {
+			number: 1,
+			name: "Example cart",
+			locationID: 0,
+			responsible: "John Doe",
+			statusID: 0,
+			lastCleaned: "0000-00-00",
+			supplies: {},
+			type: 0,
+			designID: 0,
+			comments: "",
+		},
+	},
+	designs: {
+		0: {
+			name: "Example design",
+			creationDate: "0000-00-00",
+			coverID: 0,
+			publications: [
+				[0, 0],
+				[0, 0],
+				[0, 0],
+			],
+		},
+	},
+	locations: {
+		0: {
+			name: "Kingdom Hall",
+			address: "2995 Housels Run Rd Milton PA 17847-9016",
+		},
+	},
+	library: {
+		X: {
+			title: "Other languages",
+			imageURL: "/assets/icons/unknownLanguage.png",
+			categoryID: 0,
+			date: "0000-00-00",
+		},
+		0: {
+			title: "Unknown",
+			imageURL: "/assets/icons/unknownPublication.png",
+			categoryID: 0,
+			date: "0000-00-00",
+		},
+	},
+};
+
+window.exampleData = {
 	carts: {
 		0: {
 			number: 1,
@@ -163,12 +213,8 @@ window.data = {
 	},
 	locations: {
 		0: {
-			name: "Station Hemiksem",
-			address: "Europalaan 27, 2620 Hemiksem",
-		},
-		1: {
-			name: "Tuba Aartselaar",
-			address: "Koninkrijkszaal",
+			name: "Station",
+			address: "Station",
 		},
 	},
 	library: {
@@ -204,6 +250,35 @@ window.data = {
 				"https://cms-imgp.jw-cdn.org/img/p/g/202311/E/pt/g_E_202311_lg.jpg",
 			categoryID: 1,
 			date: "0000-00-00",
+		},
+	},
+};
+
+window.globals = {
+	categories: {
+		0: {
+			name: "Other",
+			jworgCodes: [""],
+		},
+		1: {
+			name: "Awake!",
+			jworgCodes: ["g"],
+		},
+		2: {
+			name: "Watchtower",
+			jworgCodes: ["wp"],
+		},
+		3: {
+			name: "Tracts & Invitations",
+			jworgCodes: ["t", "inv"],
+		},
+		4: {
+			name: "Brochures",
+			jworgCodes: ["lffi", "rj", "ypq", "lf", "lc", "ll", "hf", "fg", "ld"],
+		},
+		5: {
+			name: "Books",
+			jworgCodes: ["lff", "yp"],
 		},
 	},
 	covers: {
@@ -250,35 +325,6 @@ window.data = {
 		10: {
 			name: "What has happened to respect?",
 			fileName: "whatHasHappenedToRespect.png",
-		},
-	},
-};
-
-window.globals = {
-	categories: {
-		0: {
-			name: "Other",
-			jworgCodes: [""],
-		},
-		1: {
-			name: "Awake!",
-			jworgCodes: ["g"],
-		},
-		2: {
-			name: "Watchtower",
-			jworgCodes: ["wp"],
-		},
-		3: {
-			name: "Tracts & Invitations",
-			jworgCodes: ["t", "inv", ""],
-		},
-		4: {
-			name: "Brochures",
-			jworgCodes: ["lffi"],
-		},
-		5: {
-			name: "Books",
-			jworgCodes: ["lff"],
 		},
 	},
 };
