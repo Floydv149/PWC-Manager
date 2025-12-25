@@ -1,0 +1,45 @@
+<body>
+    <h2 class="center" id="header"><img src="/assets/icons/pen.png">EDIT DESIGN</h2>
+    <p class="center" id="description">Fill in the details below to edit the design info.</p>
+    <form id="editDesignForm">
+        <div class="formGroup">
+            <label for="name">Name</label>
+            <input type="text" name="name" placeholder="Enter design name" required>
+        </div>
+    </form>
+    <hr>
+    <a id="saveButton" class="normal rounded full medium" onclick="save();"><img src="/assets/icons/save.png">Save
+        changes</a>
+    <a class="normal rounded full small" onclick="cancel();"><img src="/assets/icons/close.png">Cancel</a>
+</body>
+<script>
+    function initForm() {
+        const form = document.getElementById('editDesignForm');
+        const designIndex = session.currentDesignIndex;
+        const design = data.designs[designIndex];
+
+        form.name.value = design.name;
+    }
+
+    initForm();
+
+    function save() {
+        const form = document.getElementById('editDesignForm');
+        const designIndex = session.currentDesignIndex;
+        const design = data.designs[designIndex];
+
+        if (form.name.value == "") {
+            form.name.value = "Untitled";
+        }
+
+        design.name = form.name.value;
+
+        saveData();
+
+        navigateBack();
+    }
+
+    function cancel() {
+        navigateBack();
+    }
+</script>

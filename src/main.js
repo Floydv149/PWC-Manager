@@ -7,6 +7,40 @@ import {
 	closeLastModal,
 } from "./scripts/modalRenderer.js";
 import { fullScreen, closeFullScreen } from "./scripts/fullScreen.js";
+import { getAvailableIndex } from "./scripts/findAvailableIndex.js";
+
+//Capacitor plugin settings
+document.addEventListener("DOMContentLoaded", () => {
+	//In native app?
+	if (window.Capacitor) {
+		const { App } = Capacitor.Plugins;
+
+		//Assign app navigation to back button
+		App.addListener("backButton", () => {
+			navigateBack();
+		});
+	} else {
+		window.history.pushState(
+			{ page: 1 },
+			"Web Back Handler",
+			window.location.href
+		);
+
+		window.addEventListener("popstate", () => {
+			navigateBack();
+
+			setTimeout(() => {
+				window.history.pushState(
+					{ page: 1 },
+					"Web Back Handler",
+					window.location.href
+				);
+			}, 0);
+		});
+
+		document.getElementById("webBackButton").style.display = "block";
+	}
+});
 
 window.generateCartContentHTML = generateCartContentHTML;
 window.openModal = openModal;
@@ -16,14 +50,16 @@ window.closeLastModal = closeLastModal;
 window.fullScreen = fullScreen;
 window.closeFullScreen = closeFullScreen;
 window.loadPage = loadPage;
+window.reloadPage = reloadPage;
 window.navigateBack = navigateBack;
+window.getAvailableIndex = getAvailableIndex;
 
 const app = document.getElementById("app");
 window.defaultData = {
 	cart: {
 		number: 0,
-		name: "",
-		locationID: 0,
+		name: "Untitled",
+		locationID: "",
 		responsible: "",
 		statusID: 0,
 		lastCleaned: "0000-00-00",
@@ -54,8 +90,74 @@ window.defaultData = {
 			image: "close",
 		},
 	},
+	design: {
+		name: "Untitled",
+		creationDate: "0000-00-00",
+		coverID: 0,
+		publications: [
+			[0, 0],
+			[0, 0],
+			[0, 0],
+		],
+	},
+	publication: {
+		title: "Untitled",
+		imageURL: "/assets/icons/unknownPublication.png",
+		categoryID: 0,
+		date: "0000-00-00",
+	},
 };
+
 window.data = {
+	carts: {
+		0: {
+			number: 1,
+			name: "Example cart",
+			locationID: 0,
+			responsible: "John Doe",
+			statusID: 0,
+			lastCleaned: "0000-00-00",
+			supplies: {},
+			type: 0,
+			designID: 0,
+			comments: "",
+		},
+	},
+	designs: {
+		0: {
+			name: "Example design",
+			creationDate: "0000-00-00",
+			coverID: 0,
+			publications: [
+				[0, 0],
+				[0, 0],
+				[0, 0],
+			],
+		},
+	},
+	locations: {
+		0: {
+			name: "Kingdom Hall",
+			address: "2995 Housels Run Rd Milton PA 17847-9016",
+		},
+	},
+	library: {
+		X: {
+			title: "Other languages",
+			imageURL: "/assets/icons/unknownLanguage.png",
+			categoryID: 0,
+			date: "0000-00-00",
+		},
+		0: {
+			title: "Unknown",
+			imageURL: "/assets/icons/unknownPublication.png",
+			categoryID: 0,
+			date: "0000-00-00",
+		},
+	},
+};
+
+window.exampleData = {
 	carts: {
 		0: {
 			number: 1,
@@ -83,7 +185,7 @@ window.data = {
 				0: 3,
 			},
 			type: 0,
-			designID: 0,
+			designID: 1,
 			comments: "",
 		},
 	},
@@ -93,9 +195,9 @@ window.data = {
 			creationDate: "0000-00-00",
 			coverID: 0,
 			publications: [
-				[0, 0],
 				[1, 1],
 				[2, 2],
+				[3, 3],
 			],
 		},
 		1: {
@@ -105,39 +207,78 @@ window.data = {
 			publications: [
 				[2, 2],
 				[1, 1],
-				[0, 0],
+				[3, 3],
 			],
 		},
 	},
 	locations: {
 		0: {
-			name: "Station Hemiksem",
-			address: "Europalaan 27, 2620 Hemiksem",
-		},
-		1: {
-			name: "Tuba Aartselaar",
-			address: "Koninkrijkszaal",
+			name: "Station",
+			address: "Station",
 		},
 	},
-	catalog: {
+	library: {
 		X: {
 			title: "Other languages",
 			imageURL: "/assets/icons/unknownLanguage.png",
+			categoryID: 0,
+			date: "0000-00-00",
 		},
 		0: {
+			title: "Unknown",
+			imageURL: "/assets/icons/unknownPublication.png",
+			categoryID: 0,
+			date: "0000-00-00",
+		},
+		1: {
 			title: "Coping with rising prices",
 			imageURL:
 				"https://cms-imgp.jw-cdn.org/img/p/g/202511/E/pt/g_E_202511_lg.jpg",
+			categoryID: 1,
+			date: "0000-00-00",
 		},
-		1: {
+		2: {
 			title: "What has happened to respect?",
 			imageURL:
 				"https://cms-imgp.jw-cdn.org/img/p/g/202411/E/pt/g_E_202411_lg.jpg",
+			categoryID: 1,
+			date: "0000-00-00",
 		},
-		2: {
+		3: {
 			title: "Can our planet survive?",
 			imageURL:
 				"https://cms-imgp.jw-cdn.org/img/p/g/202311/E/pt/g_E_202311_lg.jpg",
+			categoryID: 1,
+			date: "0000-00-00",
+		},
+	},
+};
+
+window.globals = {
+	categories: {
+		0: {
+			name: "Other",
+			jworgCodes: [""],
+		},
+		1: {
+			name: "Awake!",
+			jworgCodes: ["g"],
+		},
+		2: {
+			name: "Watchtower",
+			jworgCodes: ["wp"],
+		},
+		3: {
+			name: "Tracts & Invitations",
+			jworgCodes: ["t", "inv"],
+		},
+		4: {
+			name: "Brochures",
+			jworgCodes: ["lffi", "rj", "ypq", "lf", "lc", "ll", "hf", "fg", "ld"],
+		},
+		5: {
+			name: "Books",
+			jworgCodes: ["lff", "yp"],
 		},
 	},
 	covers: {
@@ -146,8 +287,44 @@ window.data = {
 			fileName: "JWORG.png",
 		},
 		1: {
-			name: "Welkom",
-			fileName: "iedereenIsWelkom.png",
+			name: "A better world is near",
+			fileName: "aBetterWorldIsNear.png",
+		},
+		2: {
+			name: "An end to war - how?",
+			fileName: "anEndToWarHow.png",
+		},
+		3: {
+			name: "Everyone is welcome",
+			fileName: "everyoneIsWelcome.png",
+		},
+		4: {
+			name: "Find relief from stress",
+			fileName: "findReliefFromStress.png",
+		},
+		5: {
+			name: "Free bible course",
+			fileName: "freeBibleCourse.png",
+		},
+		6: {
+			name: "Free online bible course",
+			fileName: "freeOnlineBibleCourse.png",
+		},
+		7: {
+			name: "How did life originate?",
+			fileName: "howDidLifeOriginate.png",
+		},
+		8: {
+			name: "Mental health",
+			fileName: "mentalHealth.png",
+		},
+		9: {
+			name: "Questions about suffering answered",
+			fileName: "questionsAboutSufferingAnswered.png",
+		},
+		10: {
+			name: "What has happened to respect?",
+			fileName: "whatHasHappenedToRespect.png",
 		},
 	},
 };
@@ -156,14 +333,25 @@ window.saveData = saveData;
 
 window.session = {
 	currentModalAnswer: -1,
-	currentCartIndex: 1,
+	currentCartIndex: 0,
+	currentDesignIndex: 0,
+	currentPublicationIndex: 0,
 	newCart: false,
+	newPublication: false,
 	isRealisticView: false,
-	currentPage: "",
+	currentPage: "home",
 	pageHistory: [],
+	selectedElement: null,
+	navigateBackCancelFunction: null,
 };
 
-async function loadPage(pageName, saveHistory = true) {
+async function loadPage(
+	pageName,
+	saveHistory = true,
+	keepScrollPosition = false
+) {
+	session.navigateBackCancelFunction = null;
+
 	try {
 		setTimeout(async () => {
 			app.style.opacity = 0;
@@ -174,18 +362,26 @@ async function loadPage(pageName, saveHistory = true) {
 			const html = await response.text();
 
 			if (saveHistory) {
-				session.pageHistory.push(session.currentPage);
-				session.currentPage = pageName;
+				if (session.currentPage !== pageName) {
+					session.pageHistory.push(session.currentPage);
+				}
 			}
-			loadPageContent(html, pageName);
+			session.currentPage = pageName;
+
+			loadPageContent(html, pageName, keepScrollPosition);
 		}, 0);
 	} catch (err) {
 		// app.innerHTML = `<p>Error loading page: ${err.message}</p>`;
 		alert("Something went wrong with this button.");
+		loadPage("home");
 	}
 }
 
-function loadPageContent(html, pageName) {
+function reloadPage() {
+	loadPage(session.currentPage, false, true);
+}
+
+function loadPageContent(html, pageName, keepScrollPosition = false) {
 	setTimeout(() => {
 		app.innerHTML = html;
 
@@ -208,10 +404,13 @@ function loadPageContent(html, pageName) {
 		});
 
 		addButtonRedirects();
-		window.scrollTo({
-			top: 0,
-			behavior: "instant",
-		});
+
+		if (!keepScrollPosition) {
+			window.scrollTo({
+				top: 0,
+				behavior: "instant",
+			});
+		}
 
 		setTimeout(() => {
 			app.style.opacity = 1;
@@ -220,6 +419,11 @@ function loadPageContent(html, pageName) {
 }
 
 function navigateBack() {
+	if (session.navigateBackCancelFunction != null) {
+		session.navigateBackCancelFunction();
+		session.navigateBackCancelFunction = null;
+	}
+
 	if (
 		session.pageHistory.length > 0 &&
 		session.pageHistory[session.pageHistory.length - 1] != ""
@@ -254,9 +458,7 @@ function loadData() {
 
 function saveData() {
 	localStorage.setItem("data", JSON.stringify(data));
-	console.log("Data saved.");
 }
 
 loadData();
-session.currentCartIndex = 1;
-loadPage("cartDetails");
+loadPage("home");

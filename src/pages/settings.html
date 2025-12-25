@@ -1,0 +1,166 @@
+<body>
+    <h2 class="center"><img src="/assets/icons/settings.png">SETTINGS</h2>
+    <a class="normal rounded full medium" onclick="downloadData()"><img src="/assets/icons/download.png">Save backup</a>
+    <a class="normal rounded full medium" onclick="uploadData()"><img src="/assets/icons/upload.png">Restore backup</a>
+    <input type="file" id="fileInput" accept=".pwcbackup" style="display: none;">
+</body>
+<script>
+    async function downloadData() {
+        const result = await manageDownload();
+        if (result === true) {
+            openAlertModal("check", "BACKUP SAVED", "<p class='center'>Your backup has been saved successfully in the Documents folder of your device.</p>");
+        } else {
+            openAlertModal("close", "BACKUP FAILED", "<p class='center'>Your backup failed to save on your device. Please try again later.</p>");
+        }
+    }
+
+    async function manageDownload() {
+        if (!window.data) {
+            return "No data to backup.";
+        }
+
+        const backupData = window.data;
+
+        const jsonDataString = JSON.stringify(backupData);
+
+        //Encode data for safety
+        const encodedData = btoa(jsonDataString);
+        const filename = "backup.pwcbackup";
+
+        const isCapacitorActive = typeof window.Capacitor !== 'undefined';
+
+        // Try fetching filesystem plugin
+        const Filesystem = (isCapacitorActive && window.Capacitor.Plugins) ? window.Capacitor.Plugins.Filesystem : null;
+
+        // If all is available attempt file save
+        if (isCapacitorActive && Filesystem) {
+            try {
+                await Filesystem.writeFile({
+                    path: filename,
+                    data: encodedData,
+                    directory: 'DOCUMENTS',
+                    encoding: 'utf8'
+                });
+                return true;
+            } catch (e) {
+                return "Failed to save file.";
+            }
+
+            // Else expect the user to be on a browser and download the file through a browser download
+        } else {
+            const blob = new Blob([encodedData], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            return true;
+        }
+    }
+
+    function uploadData() {
+        // Get the hidden file input element
+        const fileInput = document.getElementById('fileInput');
+
+        // Check if the element exists
+        if (!fileInput) {
+            openAlertModal("close", "ERROR", "<p class='center'>File input element not found.</p>");
+            return;
+        }
+
+        // Remove any previous change listeners to prevent multiple execution
+        fileInput.onchange = null;
+
+        // Set up the change listener to process the file when selected
+        fileInput.onchange = async (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const result = await manageUpload(file);
+                if (result === true) {
+                    openAlertModal("check", "BACKUP RESTORED", "<p class='center'>Your data has been successfully restored from the backup file.</p>");
+                } else {
+                    // Use the result string as the error message if it's not 'true'
+                    openAlertModal("close", "RESTORE FAILED", `<p class='center'>Your backup failed to restore: ${result}.</p>`);
+                }
+            }
+            // Clear the file input value so selecting the same file works again
+            event.target.value = null;
+        };
+
+        // Trigger the click event on the hidden file input
+        fileInput.click();
+    }
+
+    // Function to handle the file upload and data restoration
+    async function manageUpload(file) {
+        if (!file) {
+            return "No file selected.";
+        }
+
+        try {
+            // Read the file content
+            const encodedData = await readLocalFileContent(file);
+
+            if (!encodedData) {
+                return "Could not read file content.";
+            }
+
+            // Decode the data (Reverse of the save process)
+            let jsonDataString;
+            try {
+                jsonDataString = atob(encodedData.trim());
+            } catch (e) {
+                return "File content is not valid encoded data.";
+            }
+
+            // Parse the JSON data
+            let restoredData;
+            try {
+                restoredData = JSON.parse(jsonDataString);
+            } catch (e) {
+                return "File content is not valid JSON.";
+            }
+
+            // Basic check to ensure the restored data looks correct (optional but recommended)
+            if (typeof restoredData !== 'object' || restoredData === null) {
+                return "Restored data format is invalid.";
+            }
+
+            // Set the global window data (assuming this is where your application stores its state)
+            window.data = restoredData;
+
+            // **TODO: You may want to add logic here to save the new data to persistent storage (e.g., localStorage, database) and refresh the UI.**
+            // Example: saveToLocalStorage(window.data);
+            // Example: refreshApplicationUI();
+
+            saveData();
+
+            return true;
+        } catch (e) {
+            console.error("Restore error:", e);
+            return e.message || "An unknown error occurred during restore.";
+        }
+    }
+
+    // Helper function to read file content using FileReader (for browser)
+    function readLocalFileContent(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+
+            reader.onload = (event) => {
+                // The result is the Base64 encoded string
+                resolve(event.target.result);
+            };
+
+            reader.onerror = (error) => {
+                reject(new Error("Error reading the file."));
+            };
+
+            // Read the file as text
+            reader.readAsText(file);
+        });
+    }
+</script>

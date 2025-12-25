@@ -1,6 +1,6 @@
 <body>
     <h2 class="center" id="header"><img src="/assets/icons/pen.png">EDIT CART</h2>
-    <p class="center" id="description">Fill in the details below to edit cart.</p>
+    <p class="center" id="description">Fill in the details below to edit the cart info.</p>
     <form id="editCartForm">
         <div class="formGroup">
             <label for="number">Number</label>
@@ -27,8 +27,7 @@
         </div>
     </form>
     <hr>
-    <a type="submit" id="saveButton" class="normal rounded full medium" onclick="save();" data-page="home"><img
-            src="/assets/icons/save.png">Save
+    <a id="saveButton" class="normal rounded full medium" onclick="save();"><img src="/assets/icons/save.png">Save
         changes</a>
     <a class="normal rounded full small" onclick="cancel();"><img src="/assets/icons/close.png">Cancel</a>
 </body>
@@ -56,6 +55,8 @@
         form.name.value = cart.name;
         form.location.value = cart.locationID;
         form.responsible.value = cart.responsible;
+
+        session.navigateBackCancelFunction = deleteCart;
     }
 
     initForm();
@@ -71,20 +72,30 @@
 
         cart.number = parseInt(form.number.value);
         cart.name = form.name.value;
-        cart.locationID = form.location.value;
+        cart.locationID = parseInt(form.location.value);
         cart.responsible = form.responsible.value;
 
         saveData();
         session.newCart = false;
+
+        session.navigateBackCancelFunction = null;
+
+        navigateBack();
     }
 
     function cancel() {
+        deleteCart();
+
+        session.newCart = false;
+
+        navigateBack();
+    }
+
+    function deleteCart() {
         if (session.newCart) {
             delete data.carts[session.currentCartIndex];
         }
 
-        session.newCart = false;
         saveData();
-        navigateBack();
     }
 </script>
