@@ -357,6 +357,25 @@ async function loadPage(
 ) {
 	session.navigateBackCancelFunction = null;
 
+	if (saveHistory) {
+		try {
+			const isCapacitorActive = typeof window.Capacitor !== "undefined";
+
+			// Try fetching filesystem plugin
+			const Haptics =
+				isCapacitorActive && window.Capacitor.Plugins
+					? window.Capacitor.Plugins.Haptics
+					: null;
+
+			// If all is available attempt file save
+			if (isCapacitorActive && Haptics) {
+				await Haptics.vibrate({ duration: 10 });
+			}
+		} catch (error) {
+			alert(error);
+		}
+	}
+
 	try {
 		setTimeout(async () => {
 			app.style.opacity = 0;
