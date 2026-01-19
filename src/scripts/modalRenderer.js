@@ -48,10 +48,10 @@ export async function openYesNoModal(
 		<div class="modalContent">
 			${questionHTML}
 			<div class="modalButtons">
-				<a class="normal rounded full medium" onclick="session.currentModalAnswer = 1"><img src="/assets/icons/checkBox.png">` +
+				<a class="normal rounded full medium" onclick="session.currentModalAnswer = 1; closeLastModal();"><img src="/assets/icons/checkBox.png">` +
 			yesAnswer +
 			`</a>
-				<a class="normal rounded full small" onclick="session.currentModalAnswer = 0"><img src="/assets/icons/close.png">` +
+				<a class="normal rounded full small" onclick="session.currentModalAnswer = 0; closeLastModal();"><img src="/assets/icons/close.png">` +
 			noAnswer +
 			`</a>
 			</div>
@@ -90,7 +90,7 @@ export async function openAlertModal(
 		<div class="modalContent">
 			${alertHTML}
 			<div class="modalButtons">
-				<a class="normal rounded full medium" onclick="session.currentModalAnswer = 1"><img src="/assets/icons/checkBox.png">` +
+				<a class="normal rounded full medium" onclick="session.currentModalAnswer = 1; closeLastModal();"><img src="/assets/icons/checkBox.png">` +
 			buttonText +
 			`</a>
 			</div>
@@ -102,8 +102,8 @@ export async function openAlertModal(
 			if (session.currentModalAnswer !== -1) {
 				clearInterval(checkAnswerInterval);
 				const answer = session.currentModalAnswer;
-				session.currentModalAnswer = -1;
 				closeLastModal();
+				session.currentModalAnswer = -1;
 				resolve(answer === 1);
 			}
 		}, 100);
