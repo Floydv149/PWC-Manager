@@ -6,7 +6,11 @@ import {
 	openAlertModal,
 	closeLastModal,
 } from "./scripts/modalRenderer.js";
-import { fullScreen, closeFullScreen } from "./scripts/fullScreen.js";
+import {
+	fullScreen,
+	closeFullScreen,
+	isFullScreenOpen,
+} from "./scripts/fullScreen.js";
 import { getAvailableIndex } from "./scripts/findAvailableIndex.js";
 
 //Capacitor plugin settings
@@ -23,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		window.history.pushState(
 			{ page: 1 },
 			"Web Back Handler",
-			window.location.href
+			window.location.href,
 		);
 
 		window.addEventListener("popstate", () => {
@@ -33,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				window.history.pushState(
 					{ page: 1 },
 					"Web Back Handler",
-					window.location.href
+					window.location.href,
 				);
 			}, 0);
 		});
@@ -49,6 +53,7 @@ window.openYesNoModal = openYesNoModal;
 window.closeLastModal = closeLastModal;
 window.fullScreen = fullScreen;
 window.closeFullScreen = closeFullScreen;
+window.isFullScreenOpen = isFullScreenOpen;
 window.loadPage = loadPage;
 window.reloadPage = reloadPage;
 window.navigateBack = navigateBack;
@@ -348,7 +353,7 @@ window.session = {
 async function loadPage(
 	pageName,
 	saveHistory = true,
-	keepScrollPosition = false
+	keepScrollPosition = false,
 ) {
 	session.navigateBackCancelFunction = null;
 
@@ -419,18 +424,22 @@ function loadPageContent(html, pageName, keepScrollPosition = false) {
 }
 
 function navigateBack() {
-	if (session.navigateBackCancelFunction != null) {
-		session.navigateBackCancelFunction();
-		session.navigateBackCancelFunction = null;
-	}
+	if (!isFullScreenOpen()) {
+		if (session.navigateBackCancelFunction != null) {
+			session.navigateBackCancelFunction();
+			session.navigateBackCancelFunction = null;
+		}
 
-	if (
-		session.pageHistory.length > 0 &&
-		session.pageHistory[session.pageHistory.length - 1] != ""
-	) {
-		loadPage(session.pageHistory.pop(), false);
+		if (
+			session.pageHistory.length > 0 &&
+			session.pageHistory[session.pageHistory.length - 1] != ""
+		) {
+			loadPage(session.pageHistory.pop(), false);
+		} else {
+			loadPage("home", false);
+		}
 	} else {
-		loadPage("home", false);
+		closeFullScreen();
 	}
 }
 

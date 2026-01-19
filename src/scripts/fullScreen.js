@@ -69,3 +69,7 @@ export function closeFullScreen() {
 		bg.remove();
 	}, 500);
 }
+
+export function isFullScreenOpen() {
+	return document.getElementById("fullScreenBG") ? true : false;
+}
