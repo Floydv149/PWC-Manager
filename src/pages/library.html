@@ -53,6 +53,12 @@
         object-fit: contain;
         border-radius: 2.5px;
     }
+
+    #library .publication p {
+        text-align: center;
+        margin: 0px;
+        padding: 0px;
+    }
 </style>
 
 <body>
@@ -115,10 +121,14 @@
                         lastCategory = publication.categoryID;
                     }
 
+                    const publicationCount = (publication.inventory?.["General"] > 0
+                        ? publication.inventory["General"] : "&nbsp;");
+
                     if (publicationID != 0 && publicationID != "X") {
                         output += `<div class="publication" onclick="editPublication(${publicationID})">
-                    <img src="${publication.imageURL}">
-                </div>`;
+                            <img src="${publication.imageURL}">
+                                <p>${publicationCount}</p>
+                            </div>`;
                     } else {
                         output += `<div class="publication">
                     <img src="${publication.imageURL}">
