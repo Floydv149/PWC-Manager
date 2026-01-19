@@ -122,7 +122,7 @@
 
         if (!publication.inventory || Object.keys(publication.inventory).length == 0) {
             publication.inventory = {
-                General: 0
+                "General": 0
             }
         }
 
@@ -381,10 +381,10 @@
     function updateSupplies(publicationID, quantityChange) {
         console.log(data.library[publicationID].inventory);
 
-        if (data.library[publicationID].inventory.general) {
-            data.library[publicationID].inventory.general += quantityChange;
+        if (data.library[publicationID].inventory["General"]) {
+            data.library[publicationID].inventory["General"] += quantityChange;
         } else {
-            data.library[publicationID].inventory.general = 1;
+            data.library[publicationID].inventory["General"] = 1;
         }
 
         saveData();
