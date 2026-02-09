@@ -1,0 +1,136 @@
+<style>
+    #library {
+        min-width: 300px;
+        width: calc(100% - 10px);
+        background: var(--color-content-background-primary);
+        max-height: 60vh;
+        align-self: flex-start;
+        overflow-y: scroll;
+        border: 5px solid var(--color-button-background);
+        border-radius: 10px;
+        overflow-x: hidden;
+        box-sizing: border-box;
+        margin: 5px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    #library::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    #library {
+        -ms-overflow-style: none;
+        /* IE and Edge */
+        scrollbar-width: none;
+        /* Firefox */
+    }
+
+    /* #library .coverRow {
+        width: 100%;
+        overflow-x: scroll;
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: left;
+        gap: 5px;
+        padding: 0px 10px;
+        box-sizing: border-box;
+    } */
+
+    #library .cover {
+        max-width: 144.5px;
+        min-width: 144.5px;
+    }
+
+    #library .cover img {
+        max-width: 144.5px !important;
+        min-width: 144.5px;
+        max-height: 320.5px !important;
+        min-height: 320.5px;
+        border-radius: 5px;
+    }
+
+    #library .cover p {
+        text-align: center;
+        margin: 0px;
+        padding: 0px;
+    }
+</style>
+
+<body>
+    <h2 class="center"><img src="/assets/icons/cover.png">COVERS</h2>
+    <p class="center">Edit the covers in your library below.</p>
+    <hr>
+
+    <div id="library">
+        <h3><img src="/assets/icons/library.png">Library</h3>
+        <div id="covers">
+        </div>
+    </div>
+</body>
+<script>
+    function initLibrary() {
+        const library = document.getElementById("library");
+
+        library.innerHTML = "";
+
+        if (Object.keys(globals.covers).length == 1) {
+            library.innerHTML = "<p class='center'>You don't have any covers yet. That's weird, they normally are included...</p>";
+        } else {
+            let output = "";
+
+            const sortedEntries = Object.entries(globals.covers);
+
+            const sortedLibrary = sortedEntries.sort(([keyA, itemA], [keyB, itemB]) => {
+                if (data.covers[keyA] && data.covers[keyB]) {
+
+                    // --- Secondary Sort: count (Descending - Newest First) ---
+                    if (data.covers[keyA].inventory["Usable"] + data.covers[keyA].inventory["Damaged"] > data.covers[keyB].inventory["Usable"] + data.covers[keyB].inventory["Damaged"]) {
+                        return -1;
+                    } else if (data.covers[keyA].inventory["Usable"] + data.covers[keyA].inventory["Damaged"] < data.covers[keyB].inventory["Usable"] + data.covers[keyB].inventory["Damaged"]) {
+                        return 1;
+                    }
+                } else {
+                    if (data.covers[keyA]) {
+                        return -1;
+                    } else if (data.covers[keyB]) {
+                        return 1;
+                    }
+                }
+
+                // Fallback: If counts are equal, maintain original order
+                return 0;
+            });
+
+            for (let i = 0; i < sortedLibrary.length; i++) {
+                const coverID = sortedLibrary[i][0];
+                const cover = globals.covers[coverID];
+
+                const coverCount = data.covers[coverID] ? (data.covers[coverID].inventory["Usable"] + data.covers[coverID].inventory["Damaged"] > 0
+                    ? data.covers[coverID].inventory["Usable"] + data.covers[coverID].inventory["Damaged"] : "") : "";
+
+                output += `<div class="cover" onclick="editCover(${coverID})">
+                            <img src="/assets/cartCovers/${cover.fileName}">
+                                <p>${coverCount}</p>
+                            </div>`;
+            }
+
+            output += `</div>`;
+
+            library.innerHTML = output;
+        }
+    }
+
+    initLibrary();
+
+    function editCover(coverID) {
+        session.currentCoverIndex = coverID;
+
+        loadPage("editCover");
+    }
+</script>

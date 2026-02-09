@@ -160,6 +160,7 @@ window.data = {
 			date: "0000-00-00",
 		},
 	},
+	covers: {},
 };
 
 window.exampleData = {
@@ -257,6 +258,7 @@ window.exampleData = {
 			date: "0000-00-00",
 		},
 	},
+	covers: {},
 };
 
 window.globals = {
@@ -341,6 +343,7 @@ window.session = {
 	currentCartIndex: 0,
 	currentDesignIndex: 0,
 	currentPublicationIndex: 0,
+	currentCoverIndex: 0,
 	newCart: false,
 	newPublication: false,
 	isRealisticView: false,
