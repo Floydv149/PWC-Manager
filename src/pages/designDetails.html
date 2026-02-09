@@ -177,7 +177,7 @@
         box-sizing: border-box;
         display: flex;
         flex-direction: row;
-        align-items: center;
+        align-items: flex-start;
         justify-content: left;
         gap: 5px;
         padding: 0px 10px;
@@ -187,9 +187,9 @@
     #library .publication {
         max-width: 94.29px !important;
         min-width: 94.29px;
-        max-height: 128.66px !important;
+        /* max-height: 128.66px !important;
         min-height: 128.66px;
-        transition: transform .25s;
+        transition: transform .25s; */
     }
 
     #library .publication img {
@@ -199,7 +199,13 @@
         min-height: 128.66px;
         object-fit: contain;
         border-radius: 2.5px;
+        /* margin: 0px; */
+    }
+
+    #library .publication p {
+        text-align: center;
         margin: 0px;
+        padding: 0px;
     }
 
     @media only screen and (max-width: 650px) {
@@ -298,6 +304,9 @@
             const publicationID = sortedLibrary[i][0];
             const publication = data.library[publicationID];
 
+            const publicationCount = (publication.inventory?.["General"] > 0
+                ? publication.inventory["General"] : "");
+
             if (lastCategory != publication.categoryID) {
                 output += `</div>
                 <h4>`+ globals.categories[publication.categoryID].name + `</h4>`;
@@ -308,6 +317,7 @@
             output += `
             <div class="publication" onclick="replacePublication(this, '${publicationID}')">
                 <img src="${publication.imageURL}">
+                    <p>${publicationCount}</p>
             </div>
             `;
         }
