@@ -1,0 +1,119 @@
+<style>
+    #publicationQR {
+        width: 100px;
+        border-radius: 10px;
+    }
+
+    #coverPreview {
+        max-width: 144.5px !important;
+        min-width: 144.5px;
+        max-height: 320.5px !important;
+        min-height: 320.5px;
+        border-radius: 5px;
+        margin: 0px auto;
+        display: block;
+    }
+
+    .countControl {
+        display: block;
+        width: 100%;
+        margin: 0px auto;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .countControl img {
+        margin: 0px;
+        display: inline;
+        max-width: 25px;
+    }
+
+    .countControl p {
+        padding: 0px 10px;
+    }
+</style>
+
+<body>
+    <h2 class="center" id="header"><img src="/assets/icons/pen.png">EDIT COVER</h2>
+    <p class="center" id="description">Change the inventory count for this cover below.</p>
+    <hr>
+    <img id="coverPreview" onclick="fullScreen(this)">
+    <h3 class="center"><img src="/assets/icons/shelf.png">Inventory</h3>
+    <div id="inventory">
+
+    </div>
+    </details>
+</body>
+<script>
+    function initCover() {
+        const coverID = session.currentCoverIndex;
+
+        if (!data.covers[coverID]) {
+            data.covers[coverID] = {
+                inventory: {
+                    "Usable": 0,
+                    "Damaged": 0,
+                    "Ordered": 0
+                }
+            };
+        }
+
+        const cover = data.covers[coverID];
+
+        document.getElementById('coverPreview').src = "/assets/cartCovers/" + globals.covers[coverID].fileName;
+
+        const inventory = document.getElementById("inventory");
+
+        for (const storageLocation in cover.inventory) {
+            inventory.innerHTML += `
+            <h4 class="center">`+ storageLocation + `</h4>
+            <div class="countControl">
+                <img src="/assets/icons/remove.png" onclick="removeSupplies(this, '${storageLocation}', '${coverID}')">
+                <p>${cover.inventory[storageLocation]}</p>
+                <img src="/assets/icons/add.png" onclick="addSupplies(this, '${storageLocation}',  '${coverID}')">
+            </div>
+            `
+        }
+    }
+
+    initCover();
+
+    function addSupplies(element, storageLocation, coverID) {
+
+        numberElement = element.parentElement.childNodes[3];
+        numberElement.innerHTML = parseInt(numberElement.innerHTML) + 1;
+
+        updateSupplies(coverID, storageLocation, 1);
+    }
+
+    function removeSupplies(element, storageLocation, coverID) {
+
+        numberElement = element.parentElement.childNodes[3];
+
+        if (parseInt(numberElement.innerHTML) > 0) {
+            numberElement.innerHTML = parseInt(numberElement.innerHTML) - 1;
+            updateSupplies(coverID, storageLocation, -1);
+        }
+        // } else {
+        //     openYesNoModal("trash", "REMOVE PUBLICATION", "<p class='center'>Are you sure you want to remove this publication from the cart supplies?</p>", "Yes", "No").then((result) => {
+        //         if (result) {
+        //             delete data.carts[session.currentCartIndex].supplies[publicationID];
+        //             saveData();
+        //             reloadPage();
+        //         }
+        //     });
+        // }
+    }
+
+    function updateSupplies(coverID, storageLocation, quantityChange) {
+        if (data.covers[coverID].inventory[storageLocation]) {
+            data.covers[coverID].inventory[storageLocation] += quantityChange;
+        } else {
+            data.covers[coverID].inventory[storageLocation] = 1;
+        }
+
+        saveData();
+    }
+</script>

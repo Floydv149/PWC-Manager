@@ -379,8 +379,6 @@
     }
 
     function updateSupplies(publicationID, quantityChange) {
-        console.log(data.library[publicationID].inventory);
-
         if (data.library[publicationID].inventory["General"]) {
             data.library[publicationID].inventory["General"] += quantityChange;
         } else {
