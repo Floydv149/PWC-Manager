@@ -62,13 +62,31 @@
 
         const cover = data.covers[coverID];
 
+        document.getElementById("header").innerHTML = "<img src='/assets/icons/pen.png'>EDIT COVER - " + globals.covers[coverID].name;
         document.getElementById('coverPreview').src = "/assets/cartCovers/" + globals.covers[coverID].fileName;
 
         const inventory = document.getElementById("inventory");
 
         for (const storageLocation in cover.inventory) {
+            let iconFileName = "";
+
+            switch (storageLocation) {
+                case "Usable":
+                    iconFileName = "sparkle";
+                    break;
+                case "Damaged":
+                    iconFileName = "damaged";
+                    break;
+                case "Ordered":
+                    iconFileName = "ordered";
+                    break;
+                default:
+                    iconFileName = "";
+                    break;
+            }
+
             inventory.innerHTML += `
-            <h4 class="center">`+ storageLocation + `</h4>
+            <h4 class="center">` + (iconFileName != "" ? `<img src="/assets/icons/${iconFileName}.png">` : "") + storageLocation + `</h4>
             <div class="countControl">
                 <img src="/assets/icons/remove.png" onclick="removeSupplies(this, '${storageLocation}', '${coverID}')">
                 <p>${cover.inventory[storageLocation]}</p>

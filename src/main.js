@@ -354,51 +354,51 @@ window.globals = {
 			fileName: "worldInTurmoil.png",
 		},
 		16: {
-			name: "",
+			name: "Peace - When?",
 			fileName: "peaceWhen.png",
 		},
 		17: {
-			name: "",
+			name: "Right and wrong",
 			fileName: "rightAndWrong.png",
 		},
 		18: {
-			name: "",
+			name: "The search for truth",
 			fileName: "theSearchForTruth.png",
 		},
 		19: {
-			name: "",
+			name: "What is Gods Kingdom?",
 			fileName: "whatIsGodsKingdom.png",
 		},
 		20: {
-			name: "",
+			name: "Why pray?",
 			fileName: "whyPray.png",
 		},
 		21: {
-			name: "",
+			name: "Breaking the cycle of hatred",
 			fileName: "breakingTheCycleOfHatred.png",
 		},
 		22: {
-			name: "",
+			name: "Can our planet survive?",
 			fileName: "canOurPlanetSurvive.png",
 		},
 		23: {
-			name: "",
+			name: "Get to know the Bible",
 			fileName: "getToKnowTheBible.png",
 		},
 		24: {
-			name: "",
+			name: "Help for those who grieve",
 			fileName: "helpForThoseWhoGrieve.png",
 		},
 		25: {
-			name: "",
+			name: "Should you believe in a creator?",
 			fileName: "shouldYouBelieveInACreator.png",
 		},
 		26: {
-			name: "",
+			name: "Who is God?",
 			fileName: "whoIsGod.png",
 		},
 		27: {
-			name: "",
+			name: "Will we ever feel safe and secure?",
 			fileName: "willWeEverFeelSafeAndSecure.png",
 		},
 	},
@@ -560,4 +560,4 @@ function saveData() {
 }
 
 loadData();
-loadPage("covers");
+loadPage("home");
