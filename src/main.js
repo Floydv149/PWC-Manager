@@ -333,6 +333,74 @@ window.globals = {
 			name: "What has happened to respect?",
 			fileName: "whatHasHappenedToRespect.png",
 		},
+		11: {
+			name: "Does God care about you?",
+			fileName: "doesGodCareAboutYou.png",
+		},
+		12: {
+			name: "How to achieve real success?",
+			fileName: "howToAchieveRealSucces.png",
+		},
+		13: {
+			name: "No more sadness",
+			fileName: "noMoreSadness.png",
+		},
+		14: {
+			name: "Coping with rising prices",
+			fileName: "copingWithRisingPrices.png",
+		},
+		15: {
+			name: "A world in turmoil - How you can cope",
+			fileName: "worldInTurmoil.png",
+		},
+		16: {
+			name: "",
+			fileName: "peaceWhen.png",
+		},
+		17: {
+			name: "",
+			fileName: "rightAndWrong.png",
+		},
+		18: {
+			name: "",
+			fileName: "theSearchForTruth.png",
+		},
+		19: {
+			name: "",
+			fileName: "whatIsGodsKingdom.png",
+		},
+		20: {
+			name: "",
+			fileName: "whyPray.png",
+		},
+		21: {
+			name: "",
+			fileName: "breakingTheCycleOfHatred.png",
+		},
+		22: {
+			name: "",
+			fileName: "canOurPlanetSurvive.png",
+		},
+		23: {
+			name: "",
+			fileName: "getToKnowTheBible.png",
+		},
+		24: {
+			name: "",
+			fileName: "helpForThoseWhoGrieve.png",
+		},
+		25: {
+			name: "",
+			fileName: "shouldYouBelieveInACreator.png",
+		},
+		26: {
+			name: "",
+			fileName: "whoIsGod.png",
+		},
+		27: {
+			name: "",
+			fileName: "willWeEverFeelSafeAndSecure.png",
+		},
 	},
 };
 
@@ -492,4 +560,4 @@ function saveData() {
 }
 
 loadData();
-loadPage("home");
+loadPage("covers");
