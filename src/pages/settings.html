@@ -20,44 +20,71 @@
         }
 
         const backupData = window.data;
-
         const jsonDataString = JSON.stringify(backupData);
-
-        //Encode data for safety
         const encodedData = btoa(jsonDataString);
-        const filename = "backup.pwcbackup";
+
+        const baseName = "backup";
+        const extension = ".pwcbackup";
+        let finalFilename = `${baseName}${extension}`;
 
         const isCapacitorActive = typeof window.Capacitor !== 'undefined';
-
-        // Try fetching filesystem plugin
         const Filesystem = (isCapacitorActive && window.Capacitor.Plugins) ? window.Capacitor.Plugins.Filesystem : null;
 
-        // If all is available attempt file save
+        // --- CAPACITOR (Native Device) LOGIC ---
         if (isCapacitorActive && Filesystem) {
             try {
+                let fileExists = true;
+                let counter = 0;
+
+                // Loop to find a filename that doesn't exist yet
+                while (fileExists) {
+                    try {
+                        // Try to get metadata for the file. If it succeeds, the file exists.
+                        await Filesystem.stat({
+                            path: finalFilename,
+                            directory: 'DOCUMENTS'
+                        });
+
+                        // If we didn't jump to the catch block, the file exists. Increment and try again.
+                        counter++;
+                        finalFilename = `${baseName}(${counter})${extension}`;
+                    } catch (statError) {
+                        // Filesystem.stat throws an error if the file does NOT exist.
+                        // This is our signal that the filename is safe to use.
+                        fileExists = false;
+                    }
+                }
+
+                // Save the file with the unique filename found
                 await Filesystem.writeFile({
-                    path: filename,
+                    path: finalFilename,
                     data: encodedData,
                     directory: 'DOCUMENTS',
                     encoding: 'utf8'
                 });
+
                 return true;
             } catch (e) {
-                return "Failed to save file.";
+                console.error("Backup error:", e);
+                return false;
             }
 
-            // Else expect the user to be on a browser and download the file through a browser download
+            // --- BROWSER LOGIC ---
         } else {
+            // Note: Most modern browsers automatically add (1), (2) to downloads.
+            // However, if you want to ensure the filename attribute itself is unique:
             const blob = new Blob([encodedData], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
+
             a.href = url;
-            a.download = filename;
+            a.download = finalFilename;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-            return true;
+
+            return finalFilename;
         }
     }
 
