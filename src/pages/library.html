@@ -143,9 +143,9 @@
                 if (publicationID != 0 && publicationID != "X" && ((search != "" && (fuzzySearch(publication.title.toLowerCase(), search)) || publication.title.toLowerCase().includes(search)) || search == "")) {
                     resultCount++;
 
-                    publication.categoryID = parseInt(publication.categoryID);
-                    publication.date = publication.data;
-                    delete publication.data;
+                    // publication.categoryID = parseInt(publication.categoryID);
+                    // publication.date = publication.data;
+                    // delete publication.data;
 
                     if (lastCategory != publication.categoryID) {
                         output += `</div>
