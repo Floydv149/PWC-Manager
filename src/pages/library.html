@@ -119,13 +119,14 @@
                     return itemA.categoryID - itemB.categoryID;
                 }
 
+                const timeA = Date.parse(itemA.date?.trim()) || 0;
+                const timeB = Date.parse(itemB.date?.trim()) || 0;
+                console.log(timeA, timeB);
+
                 // --- Secondary Sort: date (Descending - Newest First) ---
                 // Compare itemA.date (the value part) and itemB.date
-                if (itemA.date > itemB.date) {
-                    return -1; // 'a' is newer, so it comes first
-                }
-                if (itemA.date < itemB.date) {
-                    return 1; // 'b' is newer, so it comes first
+                if (timeA !== timeB) {
+                    return timeB - timeA;
                 }
 
                 // Fallback: If categoryID and date are equal, maintain original order
@@ -141,6 +142,10 @@
 
                 if (publicationID != 0 && publicationID != "X" && ((search != "" && (fuzzySearch(publication.title.toLowerCase(), search)) || publication.title.toLowerCase().includes(search)) || search == "")) {
                     resultCount++;
+
+                    publication.categoryID = parseInt(publication.categoryID);
+                    publication.date = publication.data;
+                    delete publication.data;
 
                     if (lastCategory != publication.categoryID) {
                         output += `</div>

@@ -114,7 +114,7 @@
         form.title.value = publication.title;
         form.category.value = publication.categoryID;
         form.imageURL.value = publication.imageURL;
-        form.date.value = publication.data;
+        form.date.value = publication.date;
 
         document.getElementById('imagePreview').src = publication.imageURL;
 
@@ -156,9 +156,9 @@
         }
 
         publication.title = form.title.value;
-        publication.categoryID = form.category.value;
+        publication.categoryID = parseInt(form.category.value);
         publication.imageURL = form.imageURL.value;
-        publication.data = form.date.value;
+        publication.date = form.date.value;
 
         saveData();
         session.newPublication = false;
