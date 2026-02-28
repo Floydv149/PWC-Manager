@@ -169,6 +169,8 @@
 
         if (form.alias.value != "") {
             cover.alias = form.alias.value;
+        } else if (cover.alias) {
+            delete cover.alias;
         }
 
         saveData();
