@@ -67,6 +67,21 @@
 
         const inventory = document.getElementById("inventory");
 
+        let usedCount = 0;
+
+        for (cartID in data.carts) {
+            const cart = data.carts[cartID];
+
+            if (data.designs[cart.designID].coverID == session.currentCoverIndex) {
+                usedCount++;
+            }
+        }
+
+        if (usedCount > 0) {
+            inventory.innerHTML += `<h4 class="center"><img src="/assets/icons/launch.png">Currently used</h4>
+            <p class="center">In ` + usedCount + ` cart` + (usedCount > 1 ? "s" : "") + `</p>`;
+        }
+
         for (const storageLocation in cover.inventory) {
             let iconFileName = "";
 
