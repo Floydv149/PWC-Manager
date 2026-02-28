@@ -1,9 +1,4 @@
 <style>
-    #publicationQR {
-        width: 100px;
-        border-radius: 10px;
-    }
-
     #coverPreview {
         max-width: 144.5px !important;
         min-width: 144.5px;
@@ -40,11 +35,23 @@
     <p class="center" id="description">Change the inventory count for this cover below.</p>
     <hr>
     <img id="coverPreview" onclick="fullScreen(this)">
+    <hr>
+    <form id="editCoverForm">
+        <div class="formGroup">
+            <label for="alias">Alias</label>
+            <input type="text" name="alias" placeholder="Enter cover alias">
+        </div>
+    </form>
+    <hr>
     <h3 class="center"><img src="/assets/icons/shelf.png">Inventory</h3>
     <div id="inventory">
 
     </div>
     </details>
+    <hr>
+    <a id="saveButton" class="normal rounded full medium" onclick="save();"><img src="/assets/icons/save.png">Save
+        changes</a>
+    <a class="normal rounded full small" onclick="cancel();"><img src="/assets/icons/close.png">Cancel</a>
 </body>
 <script>
     function initCover() {
@@ -64,6 +71,11 @@
 
         document.getElementById("header").innerHTML = "<img src='/assets/icons/pen.png'>EDIT COVER - " + globals.covers[coverID].name;
         document.getElementById('coverPreview').src = "/assets/cartCovers/" + globals.covers[coverID].fileName;
+
+        const form = document.getElementById('editCoverForm');
+        if (cover.alias) {
+            form.alias.value = cover.alias;
+        }
 
         const inventory = document.getElementById("inventory");
 
@@ -148,5 +160,22 @@
         }
 
         saveData();
+    }
+
+    function save() {
+        const form = document.getElementById('editCoverForm');
+        const coverIndex = session.currentCoverIndex;
+        const cover = data.covers[coverIndex];
+
+        if (form.alias.value != "") {
+            cover.alias = form.alias.value;
+        }
+
+        saveData();
+        navigateBack();
+    }
+
+    function cancel() {
+        navigateBack();
     }
 </script>
