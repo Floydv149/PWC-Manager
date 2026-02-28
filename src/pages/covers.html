@@ -92,6 +92,7 @@
     <div id="library">
         <h3><img src="/assets/icons/library.png">Library</h3>
         <input type="text" id="searchInput" placeholder="Search for a cover" onkeyup="initLibrary()">
+        <p id="count" class="center"></p>
         <div id="covers">
         </div>
     </div>
@@ -108,6 +109,8 @@
     function initLibrary() {
         const library = document.getElementById("covers");
         const search = document.getElementById("searchInput").value.toLowerCase();
+        const countDisplay = document.getElementById("count");
+        countDisplay.innerHTML = "";
 
         library.innerHTML = "";
 
@@ -146,6 +149,7 @@
 
             let lastCategory = -1;
             let resultCount = 0;
+            let inventoryCount = 0;
 
             for (let i = 0; i < sortedLibrary.length; i++) {
                 const coverID = sortedLibrary[i][0];
@@ -162,6 +166,10 @@
                     const coverCount = data.covers[coverID] ? (data.covers[coverID].inventory["Usable"] + data.covers[coverID].inventory["Damaged"] > 0
                         ? data.covers[coverID].inventory["Usable"] + data.covers[coverID].inventory["Damaged"] : "") : "";
 
+                    if (coverCount != "") {
+                        inventoryCount += coverCount;
+                    }
+
                     output += `<div class="cover" onclick="editCover(${coverID})">
                             <img src="/assets/cartCovers/${cover.fileName}">
                                 <p>${coverCount}</p>
@@ -172,6 +180,18 @@
             output += `</div>`;
 
             library.innerHTML = output;
+
+            if (inventoryCount == 0) {
+                if (search == "") {
+                    countDisplay.innerHTML = "No covers currently in inventory";
+                }
+            } else {
+                if (search != "") {
+                    countDisplay.innerHTML = inventoryCount + " covers in inventory based on current search";
+                } else {
+                    countDisplay.innerHTML = inventoryCount + " total covers in inventory";
+                }
+            }
         }
     }
 
