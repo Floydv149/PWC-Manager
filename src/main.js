@@ -588,5 +588,4 @@ function saveData() {
 }
 
 loadData();
-session.currentCoverIndex = 2;
-loadPage("covers");
+loadPage("home");
