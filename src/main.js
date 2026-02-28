@@ -292,114 +292,142 @@ window.globals = {
 		0: {
 			name: "JW.ORG",
 			fileName: "JWORG.png",
+			categoryID: 0,
 		},
 		1: {
 			name: "A better world is near",
 			fileName: "aBetterWorldIsNear.png",
+			categoryID: 2,
 		},
 		2: {
 			name: "An end to war - how?",
 			fileName: "anEndToWarHow.png",
+			categoryID: 2,
 		},
 		3: {
 			name: "Everyone is welcome",
 			fileName: "everyoneIsWelcome.png",
+			categoryID: 3,
 		},
 		4: {
 			name: "Find relief from stress",
 			fileName: "findReliefFromStress.png",
+			categoryID: 1,
 		},
 		5: {
 			name: "Free bible course",
 			fileName: "freeBibleCourse.png",
+			categoryID: 5,
 		},
 		6: {
 			name: "Free online bible course",
 			fileName: "freeOnlineBibleCourse.png",
+			categoryID: 5,
 		},
 		7: {
 			name: "How did life originate?",
 			fileName: "howDidLifeOriginate.png",
+			categoryID: 4,
 		},
 		8: {
 			name: "Mental health",
 			fileName: "mentalHealth.png",
+			categoryID: 2,
 		},
 		9: {
 			name: "Questions about suffering answered",
 			fileName: "questionsAboutSufferingAnswered.png",
+			categoryID: 1,
 		},
 		10: {
 			name: "What has happened to respect?",
 			fileName: "whatHasHappenedToRespect.png",
+			categoryID: 1,
 		},
 		11: {
 			name: "Does God care about you?",
 			fileName: "doesGodCareAboutYou.png",
+			categoryID: 2,
 		},
 		12: {
 			name: "How to achieve real success?",
 			fileName: "howToAchieveRealSucces.png",
+			categoryID: 0,
 		},
 		13: {
 			name: "No more sadness",
 			fileName: "noMoreSadness.png",
+			categoryID: 0,
 		},
 		14: {
 			name: "Coping with rising prices",
 			fileName: "copingWithRisingPrices.png",
+			categoryID: 1,
 		},
 		15: {
 			name: "A world in turmoil - How you can cope",
 			fileName: "worldInTurmoil.png",
+			categoryID: 1,
 		},
 		16: {
 			name: "Peace - When?",
 			fileName: "peaceWhen.png",
+			categoryID: 0,
 		},
 		17: {
 			name: "Right and wrong",
 			fileName: "rightAndWrong.png",
+			categoryID: 2,
 		},
 		18: {
 			name: "The search for truth",
 			fileName: "theSearchForTruth.png",
+			categoryID: 2,
 		},
 		19: {
 			name: "What is Gods Kingdom?",
 			fileName: "whatIsGodsKingdom.png",
+			categoryID: 2,
 		},
 		20: {
 			name: "Why pray?",
 			fileName: "whyPray.png",
+			categoryID: 2,
 		},
 		21: {
 			name: "Breaking the cycle of hatred",
 			fileName: "breakingTheCycleOfHatred.png",
+			categoryID: 2,
 		},
 		22: {
 			name: "Can our planet survive?",
 			fileName: "canOurPlanetSurvive.png",
+			categoryID: 1,
 		},
 		23: {
 			name: "Get to know the Bible",
 			fileName: "getToKnowTheBible.png",
+			categoryID: 0,
 		},
 		24: {
 			name: "Help for those who grieve",
 			fileName: "helpForThoseWhoGrieve.png",
+			categoryID: 0,
 		},
 		25: {
 			name: "Should you believe in a creator?",
 			fileName: "shouldYouBelieveInACreator.png",
+			categoryID: 1,
 		},
 		26: {
 			name: "Who is God?",
 			fileName: "whoIsGod.png",
+			categoryID: 2,
 		},
 		27: {
 			name: "Will we ever feel safe and secure?",
 			fileName: "willWeEverFeelSafeAndSecure.png",
+			categoryID: 1,
 		},
 	},
 };
@@ -560,4 +588,5 @@ function saveData() {
 }
 
 loadData();
-loadPage("home");
+session.currentCoverIndex = 2;
+loadPage("covers");
