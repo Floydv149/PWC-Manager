@@ -85,6 +85,7 @@
     <div id="library">
         <h3><img src="/assets/icons/library.png">Libary</h3>
         <input type="text" id="searchInput" placeholder="Search for a publication" onkeyup="initLibrary()">
+        <p id="count" class="center"></p>
         <div id="publications">
         </div>
     </div>
@@ -101,8 +102,8 @@
     function initLibrary() {
         const library = document.getElementById("publications");
         const search = document.getElementById("searchInput").value.toLowerCase();
-
-        console.log("hi");
+        const countDisplay = document.getElementById("count");
+        countDisplay.innerHTML = "";
 
         library.innerHTML = "";
 
@@ -121,7 +122,6 @@
 
                 const timeA = Date.parse(itemA.date?.trim()) || 0;
                 const timeB = Date.parse(itemB.date?.trim()) || 0;
-                console.log(timeA, timeB);
 
                 // --- Secondary Sort: date (Descending - Newest First) ---
                 // Compare itemA.date (the value part) and itemB.date
@@ -135,6 +135,7 @@
 
             let lastCategory = -1;
             let resultCount = 0;
+            let inventoryCount = 0;
 
             for (let i = 0; i < sortedLibrary.length; i++) {
                 const publicationID = sortedLibrary[i][0];
@@ -152,6 +153,10 @@
 
                     const publicationCount = (publication.inventory?.["General"] > 0
                         ? publication.inventory["General"] : "");
+
+                    if (publicationCount != "") {
+                        inventoryCount += publication.inventory["General"];
+                    }
 
                     if (publicationID != 0 && publicationID != "X") {
                         output += `<div class="publication" onclick="editPublication(${publicationID})">
@@ -173,6 +178,18 @@
             output += `</div>`;
 
             library.innerHTML = output;
+
+            if (inventoryCount == 0) {
+                if (search == "") {
+                    countDisplay.innerHTML = "No publications currently in inventory";
+                }
+            } else {
+                if (search != "") {
+                    countDisplay.innerHTML = inventoryCount + " publications in inventory based on current search";
+                } else {
+                    countDisplay.innerHTML = inventoryCount + " total publications in inventory";
+                }
+            }
         }
     }
 
