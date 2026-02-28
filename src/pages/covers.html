@@ -3,7 +3,7 @@
         min-width: 300px;
         width: calc(100% - 10px);
         background: var(--color-content-background-primary);
-        max-height: 70vh;
+        max-height: 60vh;
         align-self: flex-start;
         overflow-y: scroll;
         border: 5px solid var(--color-button-background);
@@ -11,10 +11,15 @@
         overflow-x: hidden;
         box-sizing: border-box;
         margin: 5px;
+        padding: 0px 0px 10px 0px;
+    }
+
+
+    #library #covers {
         display: flex;
         flex-wrap: wrap;
-        justify-content: center;
-        gap: 10px;
+        justify-content: flex-start;
+        /* gap: 10px; */
     }
 
     /* Hide scrollbar for Chrome, Safari and Opera */
@@ -45,6 +50,11 @@
     #library .cover {
         max-width: 144.5px;
         min-width: 144.5px;
+        margin-left: 10px;
+    }
+
+    #library #covers h4 {
+        width: 100%;
     }
 
     #library .cover img {
@@ -60,6 +70,18 @@
         margin: 0px;
         padding: 0px;
     }
+
+    #searchInput {
+        width: calc(100% - 20px);
+        box-sizing: border-box;
+        margin: 10px;
+        padding: 10px;
+        text-align: center;
+        background-image: url("/assets/icons/search.png");
+        background-position: 15px 7.5px;
+        background-repeat: no-repeat;
+        background-size: 20px 20px;
+    }
 </style>
 
 <body>
@@ -69,13 +91,23 @@
 
     <div id="library">
         <h3><img src="/assets/icons/library.png">Library</h3>
+        <input type="text" id="searchInput" placeholder="Search for a cover" onkeyup="initLibrary()">
         <div id="covers">
         </div>
     </div>
 </body>
 <script>
+    function fuzzySearch(text, query) {
+        if (query === "") return true;
+        // Maakt van 'abc' -> 'a.*b.*c'
+        const pattern = query.split("").join(".*");
+        const re = new RegExp(pattern, "i");
+        return re.test(text);
+    };
+
     function initLibrary() {
-        const library = document.getElementById("library");
+        const library = document.getElementById("covers");
+        const search = document.getElementById("searchInput").value.toLowerCase();
 
         library.innerHTML = "";
 
@@ -88,6 +120,11 @@
 
             const sortedLibrary = sortedEntries.sort(([keyA, itemA], [keyB, itemB]) => {
                 if (data.covers[keyA] && data.covers[keyB]) {
+
+                    // --- Primary Sort: categoryID (Ascending) ---
+                    if (itemA.categoryID !== itemB.categoryID) {
+                        return itemA.categoryID - itemB.categoryID;
+                    }
 
                     // --- Secondary Sort: count (Descending - Newest First) ---
                     if (data.covers[keyA].inventory["Usable"] + data.covers[keyA].inventory["Damaged"] > data.covers[keyB].inventory["Usable"] + data.covers[keyB].inventory["Damaged"]) {
@@ -107,17 +144,29 @@
                 return 0;
             });
 
+            let lastCategory = -1;
+            let resultCount = 0;
+
             for (let i = 0; i < sortedLibrary.length; i++) {
                 const coverID = sortedLibrary[i][0];
                 const cover = globals.covers[coverID];
 
-                const coverCount = data.covers[coverID] ? (data.covers[coverID].inventory["Usable"] + data.covers[coverID].inventory["Damaged"] > 0
-                    ? data.covers[coverID].inventory["Usable"] + data.covers[coverID].inventory["Damaged"] : "") : "";
+                if (search == "" || (search != "" && (data.covers[coverID].alias && (fuzzySearch(data.covers[coverID].alias.toLowerCase(), search) || data.covers[coverID].alias.toLowerCase().includes(search))) || fuzzySearch(cover.name.toLowerCase(), search))) {
+                    resultCount++;
 
-                output += `<div class="cover" onclick="editCover(${coverID})">
+                    if (lastCategory != cover.categoryID) {
+                        output += `<h4>${globals.categories[cover.categoryID].name}</h4>`;
+                        lastCategory = cover.categoryID;
+                    }
+
+                    const coverCount = data.covers[coverID] ? (data.covers[coverID].inventory["Usable"] + data.covers[coverID].inventory["Damaged"] > 0
+                        ? data.covers[coverID].inventory["Usable"] + data.covers[coverID].inventory["Damaged"] : "") : "";
+
+                    output += `<div class="cover" onclick="editCover(${coverID})">
                             <img src="/assets/cartCovers/${cover.fileName}">
                                 <p>${coverCount}</p>
                             </div>`;
+                }
             }
 
             output += `</div>`;
