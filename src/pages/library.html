@@ -144,6 +144,16 @@
                 if (publicationID != 0 && publicationID != "X" && ((search != "" && (fuzzySearch(publication.title.toLowerCase(), search)) || publication.title.toLowerCase().includes(search)) || search == "")) {
                     resultCount++;
 
+                    // try {
+
+                    //     if (publication?.inventory["General"]) {
+                    //         publication.inventory["General"] = 0;
+                    //     }
+                    // }
+                    // catch (error) {
+                    //     console.log(error);
+                    // }
+
                     if (lastCategory != publication.categoryID) {
                         output += `</div>
                     <h4>${globals.categories[publication.categoryID].name}</h4>
