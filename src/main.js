@@ -429,6 +429,26 @@ window.globals = {
 			fileName: "willWeEverFeelSafeAndSecure.png",
 			categoryID: 1,
 		},
+		28: {
+			name: "End to suffering",
+			fileName: "endToSuffering.png",
+			categoryID: 3,
+		},
+		29: {
+			name: "Eternal happiness",
+			fileName: "eternalHappiness.png",
+			categoryID: 3,
+		},
+		30: {
+			name: "Happy families",
+			fileName: "happyFamilies.png",
+			categoryID: 3,
+		},
+		31: {
+			name: "Peace everywhere",
+			fileName: "peaceEverywhere.png",
+			categoryID: 3,
+		},
 	},
 };
 

@@ -1,41 +1,40 @@
 <style>
-    #library {
-        min-width: 300px;
-        width: calc(100% - 10px);
-        background: var(--color-content-background-primary);
-        max-height: 72.5vh;
-        align-self: flex-start;
-        overflow-y: scroll;
-        border: 5px solid var(--color-button-background);
-        border-radius: 10px;
-        overflow-x: hidden;
-        box-sizing: border-box;
-        margin: 5px;
-        padding: 0px 0px 10px 0px;
-    }
+	#library {
+		min-width: 300px;
+		width: calc(100% - 10px);
+		background: var(--color-content-background-primary);
+		max-height: 72.5vh;
+		align-self: flex-start;
+		overflow-y: scroll;
+		border: 5px solid var(--color-button-background);
+		border-radius: 10px;
+		overflow-x: hidden;
+		box-sizing: border-box;
+		margin: 5px;
+		padding: 0px 0px 10px 0px;
+	}
 
+	#library #covers {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 10px;
+	}
 
-    #library #covers {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 10px;
-    }
+	/* Hide scrollbar for Chrome, Safari and Opera */
+	#library::-webkit-scrollbar {
+		display: none;
+	}
 
-    /* Hide scrollbar for Chrome, Safari and Opera */
-    #library::-webkit-scrollbar {
-        display: none;
-    }
+	/* Hide scrollbar for IE, Edge and Firefox */
+	#library {
+		-ms-overflow-style: none;
+		/* IE and Edge */
+		scrollbar-width: none;
+		/* Firefox */
+	}
 
-    /* Hide scrollbar for IE, Edge and Firefox */
-    #library {
-        -ms-overflow-style: none;
-        /* IE and Edge */
-        scrollbar-width: none;
-        /* Firefox */
-    }
-
-    /* #library .coverRow {
+	/* #library .coverRow {
         width: 100%;
         overflow-x: scroll;
         display: flex;
@@ -47,159 +46,225 @@
         box-sizing: border-box;
     } */
 
-    #library .cover {
-        max-width: 144.5px;
-        min-width: 144.5px;
-        /* margin-left: 10px; */
-    }
+	#library .cover {
+		max-width: 144.5px;
+		min-width: 144.5px;
+		/* margin-left: 10px; */
+	}
 
-    #library #covers h4 {
-        width: 100%;
-    }
+	#library #covers h4 {
+		width: 100%;
+	}
 
-    #library .cover img {
-        max-width: 144.5px !important;
-        min-width: 144.5px;
-        max-height: 320.5px !important;
-        min-height: 320.5px;
-        border-radius: 5px;
-    }
+	#library .cover img {
+		max-width: 144.5px !important;
+		min-width: 144.5px;
+		max-height: 320.5px !important;
+		min-height: 320.5px;
+		border-radius: 5px;
+	}
 
-    #library .cover p {
-        text-align: center;
-        margin: 0px;
-        padding: 0px;
-    }
+	#library .cover p {
+		text-align: center;
+		margin: 0px;
+		padding: 0px;
+	}
 
-    #searchInput {
-        width: calc(100% - 20px);
-        box-sizing: border-box;
-        margin: 10px;
-        padding: 10px;
-        text-align: center;
-        background-image: url("/assets/icons/search.png");
-        background-position: 15px 7.5px;
-        background-repeat: no-repeat;
-        background-size: 20px 20px;
-    }
+	#searchInput {
+		width: calc(100% - 20px);
+		box-sizing: border-box;
+		margin: 10px;
+		padding: 10px;
+		text-align: center;
+		background-image: url("/assets/icons/search.png");
+		background-position: 15px 7.5px;
+		background-repeat: no-repeat;
+		background-size: 20px 20px;
+	}
 </style>
 
 <body>
-    <h2 class="center"><img src="/assets/icons/cover.png">COVERS</h2>
-    <p class="center">Edit the covers in your library below.</p>
-    <hr>
+	<h2 class="center"><img src="/assets/icons/cover.png" />COVERS</h2>
+	<p class="center">Edit the covers in your library below.</p>
+	<hr />
 
-    <div id="library">
-        <h3><img src="/assets/icons/library.png">Library</h3>
-        <input type="text" id="searchInput" placeholder="Search for a cover" onkeyup="initLibrary()">
-        <p id="count" class="center"></p>
-        <div id="covers">
-        </div>
-    </div>
+	<div id="library">
+		<h3><img src="/assets/icons/library.png" />Library</h3>
+		<input
+			type="text"
+			id="searchInput"
+			placeholder="Search for a cover"
+			onkeyup="initLibrary()"
+		/>
+		<p id="count" class="center"></p>
+		<div id="covers"></div>
+	</div>
 </body>
 <script>
-    function fuzzySearch(text, query) {
-        if (query === "") return true;
-        // Maakt van 'abc' -> 'a.*b.*c'
-        const pattern = query.split("").join(".*");
-        const re = new RegExp(pattern, "i");
-        return re.test(text);
-    };
+	function fuzzySearch(text, query) {
+		if (query === "") return true;
+		// Maakt van 'abc' -> 'a.*b.*c'
+		const pattern = query.split("").join(".*");
+		const re = new RegExp(pattern, "i");
+		return re.test(text);
+	}
 
-    function initLibrary() {
-        const library = document.getElementById("covers");
-        const search = document.getElementById("searchInput").value.toLowerCase();
-        const countDisplay = document.getElementById("count");
-        countDisplay.innerHTML = "";
+	function initLibrary() {
+		const library = document.getElementById("covers");
+		const search = document.getElementById("searchInput").value.toLowerCase();
+		const countDisplay = document.getElementById("count");
+		countDisplay.innerHTML = "";
 
-        library.innerHTML = "";
+		library.innerHTML = "";
 
-        if (Object.keys(globals.covers).length == 1) {
-            library.innerHTML = "<p class='center'>You don't have any covers yet. That's weird, they normally are included...</p>";
-        } else {
-            let output = "";
+		if (Object.keys(globals.covers).length == 1) {
+			library.innerHTML =
+				"<p class='center'>You don't have any covers yet. That's weird, they normally are included...</p>";
+		} else {
+			let output = "";
 
-            const sortedEntries = Object.entries(globals.covers);
+			const sortedEntries = Object.entries(globals.covers);
 
-            const sortedLibrary = sortedEntries.sort(([keyA, itemA], [keyB, itemB]) => {
-                if (data.covers[keyA] && data.covers[keyB]) {
+			// const sortedLibrary = sortedEntries.sort(
+			// 	([keyA, itemA], [keyB, itemB]) => {
+			// 		if (data.covers[keyA] && data.covers[keyB]) {
+			// 			// --- Primary Sort: categoryID (Ascending) ---
+			// 			if (itemA.categoryID !== itemB.categoryID) {
+			// 				return itemA.categoryID - itemB.categoryID;
+			// 			}
 
-                    // --- Primary Sort: categoryID (Ascending) ---
-                    if (itemA.categoryID !== itemB.categoryID) {
-                        return itemA.categoryID - itemB.categoryID;
-                    }
+			// 			// --- Secondary Sort: count (Descending - Newest First) ---
+			// 			if (
+			// 				data.covers[keyA].inventory["Usable"] +
+			// 					data.covers[keyA].inventory["Damaged"] >
+			// 				data.covers[keyB].inventory["Usable"] +
+			// 					data.covers[keyB].inventory["Damaged"]
+			// 			) {
+			// 				return -1;
+			// 			} else if (
+			// 				data.covers[keyA].inventory["Usable"] +
+			// 					data.covers[keyA].inventory["Damaged"] <
+			// 				data.covers[keyB].inventory["Usable"] +
+			// 					data.covers[keyB].inventory["Damaged"]
+			// 			) {
+			// 				return 1;
+			// 			}
+			// 		} else {
+			// 			if (data.covers[keyA]) {
+			// 				return -1;
+			// 			} else if (data.covers[keyB]) {
+			// 				return 1;
+			// 			}
+			// 		}
 
-                    // --- Secondary Sort: count (Descending - Newest First) ---
-                    if (data.covers[keyA].inventory["Usable"] + data.covers[keyA].inventory["Damaged"] > data.covers[keyB].inventory["Usable"] + data.covers[keyB].inventory["Damaged"]) {
-                        return -1;
-                    } else if (data.covers[keyA].inventory["Usable"] + data.covers[keyA].inventory["Damaged"] < data.covers[keyB].inventory["Usable"] + data.covers[keyB].inventory["Damaged"]) {
-                        return 1;
-                    }
-                } else {
-                    if (data.covers[keyA]) {
-                        return -1;
-                    } else if (data.covers[keyB]) {
-                        return 1;
-                    }
-                }
+			// 		// Fallback: If counts are equal, maintain original order
+			// 		return 0;
+			// 	},
+			// );
 
-                // Fallback: If counts are equal, maintain original order
-                return 0;
-            });
+			const sortedLibrary = sortedEntries.sort(
+				([keyA, itemA], [keyB, itemB]) => {
+					// 1. Primary Sort: categoryID (Ascending)
+					if (itemA.categoryID !== itemB.categoryID) {
+						return itemA.categoryID - itemB.categoryID;
+					}
 
-            let lastCategory = -1;
-            let resultCount = 0;
-            let inventoryCount = 0;
+					// 2. Secondary Sort: Inventory Presence & Count
+					const hasA = !!data.covers[keyA];
+					const hasB = !!data.covers[keyB];
 
-            for (let i = 0; i < sortedLibrary.length; i++) {
-                const coverID = sortedLibrary[i][0];
-                const cover = globals.covers[coverID];
+					// If one has data and the other doesn't, put the one with data first
+					if (hasA !== hasB) {
+						return hasA ? -1 : 1;
+					}
 
-                if (search == "" || (search != "" && (data.covers[coverID].alias && (fuzzySearch(data.covers[coverID].alias.toLowerCase(), search) || data.covers[coverID].alias.toLowerCase().includes(search))) || fuzzySearch(cover.name.toLowerCase(), search))) {
-                    resultCount++;
+					// If both have data, compare their total inventory (Descending)
+					if (hasA && hasB) {
+						const countA =
+							(data.covers[keyA].inventory["Usable"] || 0) +
+							(data.covers[keyA].inventory["Damaged"] || 0);
+						const countB =
+							(data.covers[keyB].inventory["Usable"] || 0) +
+							(data.covers[keyB].inventory["Damaged"] || 0);
 
-                    if (lastCategory != cover.categoryID) {
-                        output += `<h4>${globals.categories[cover.categoryID].name}</h4>`;
-                        lastCategory = cover.categoryID;
-                    }
+						if (countA !== countB) {
+							return countB - countA; // Descending order
+						}
+					}
 
-                    const coverCount = data.covers[coverID] ? (data.covers[coverID].inventory["Usable"] + data.covers[coverID].inventory["Damaged"] > 0
-                        ? data.covers[coverID].inventory["Usable"] + data.covers[coverID].inventory["Damaged"] : "") : "";
+					// Fallback: Maintain original order
+					return 0;
+				},
+			);
 
-                    if (coverCount != "") {
-                        inventoryCount += coverCount;
-                    }
+			let lastCategory = -1;
+			let resultCount = 0;
+			let inventoryCount = 0;
 
-                    output += `<div class="cover" onclick="editCover(${coverID})">
+			for (let i = 0; i < sortedLibrary.length; i++) {
+				const coverID = sortedLibrary[i][0];
+				const cover = globals.covers[coverID];
+
+				if (
+					search == "" ||
+					(search != "" &&
+						data.covers[coverID]?.alias &&
+						(fuzzySearch(data.covers[coverID].alias.toLowerCase(), search) ||
+							data.covers[coverID]?.alias.toLowerCase().includes(search))) ||
+					fuzzySearch(cover.name.toLowerCase(), search)
+				) {
+					resultCount++;
+
+					if (lastCategory != cover.categoryID) {
+						output += `<h4>${globals.categories[cover.categoryID].name}</h4>`;
+						lastCategory = cover.categoryID;
+					}
+
+					const coverCount = data.covers[coverID]
+						? data.covers[coverID].inventory["Usable"] +
+								data.covers[coverID].inventory["Damaged"] >
+						  0
+							? data.covers[coverID].inventory["Usable"] +
+							  data.covers[coverID].inventory["Damaged"]
+							: ""
+						: "";
+
+					if (coverCount != "") {
+						inventoryCount += coverCount;
+					}
+
+					output += `<div class="cover" onclick="editCover(${coverID})">
                             <img src="/assets/cartCovers/${cover.fileName}">
                                 <p>${coverCount}</p>
                             </div>`;
-                }
-            }
+				}
+			}
 
-            output += `</div>`;
+			output += `</div>`;
 
-            library.innerHTML = output;
+			library.innerHTML = output;
 
-            if (inventoryCount == 0) {
-                if (search == "") {
-                    countDisplay.innerHTML = "No covers currently in inventory";
-                }
-            } else {
-                if (search != "") {
-                    countDisplay.innerHTML = inventoryCount + " covers in inventory based on current search";
-                } else {
-                    countDisplay.innerHTML = inventoryCount + " total covers in inventory";
-                }
-            }
-        }
-    }
+			if (inventoryCount == 0) {
+				if (search == "") {
+					countDisplay.innerHTML = "No covers currently in inventory";
+				}
+			} else {
+				if (search != "") {
+					countDisplay.innerHTML =
+						inventoryCount + " covers in inventory based on current search";
+				} else {
+					countDisplay.innerHTML =
+						inventoryCount + " total covers in inventory";
+				}
+			}
+		}
+	}
 
-    initLibrary();
+	initLibrary();
 
-    function editCover(coverID) {
-        session.currentCoverIndex = coverID;
+	function editCover(coverID) {
+		session.currentCoverIndex = coverID;
 
-        loadPage("editCover");
-    }
+		loadPage("editCover");
+	}
 </script>
